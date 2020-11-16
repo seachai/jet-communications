@@ -1,11 +1,12 @@
 import React from "react";
-// import logo from "./logo.svg";
+import { Button, ButtonGroup } from "@chakra-ui/react";
 import "./App.css";
 
 function App() {
   return (
     <div className='App'>
       <h1>Hello!!!fdafdfdafdafaf</h1>
+      <Button colorScheme='blue'>Button</Button>
     </div>
   );
 }
