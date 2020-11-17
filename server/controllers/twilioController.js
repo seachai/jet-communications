@@ -8,8 +8,6 @@ const client = require("twilio")(accountSid, authToken);
 
 const twilioController = {};
 
-module.exports = twilioController;
-
 twilioController.startVideoChat = (req, res, next) => {
   console.log("starting video chat");
 };
@@ -37,3 +35,5 @@ twilioController.generateAccessToken = () => {
 
   module.exports = tokenGenerator;
 };
+
+module.exports = twilioController;
