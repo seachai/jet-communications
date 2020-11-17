@@ -6,13 +6,30 @@ router.get("/", (req, res) => {
   res.status(200).json({ message: "/api route ping" });
 });
 
+//
+
 // USERS
 // create user
-router.post("/users", async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   try {
+    const { name, email, password } = req.body;
     // TODO: Create a user in the database
 
-    res.status(200);
+    res.status(200).json({ name, email });
+  } catch (e) {
+    console.log({ error });
+    return next({
+      log: `Error caught in POST users. \n Error Message: ${e.errmsg || e}`,
+      message: { err: e.errmsg || e },
+    });
+  }
+});
+
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // verify user and password, and return the name
+    res.status(200).json({ name, email });
   } catch (e) {
     console.log({ error });
     return next({
