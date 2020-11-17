@@ -2,11 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
-// import "./index.css";
+
 import AuthProvider from "./AuthProvider";
 import WithAuth from "./WithAuth";
 import Navigation from "./Navigation";
 import App from "./App";
+import EntryPage from './Components/EntryPage'
 import Admin from "./Components/Admin/";
 
 ReactDOM.render(
@@ -16,7 +17,8 @@ ReactDOM.render(
         <Router>
           <Navigation />
           <Switch>
-            <Route exact path='/' component={App} />
+            <Route exact path='/' component={EntryPage} />
+            <Route exact path='/main' component={App} />
             <WithAuth path='/admin'>
               <Admin />
             </WithAuth>

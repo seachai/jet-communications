@@ -4,6 +4,7 @@ import { Button, Input} from "@chakra-ui/react";
 import "./App.css";
 
 import { AuthContext } from "./AuthProvider";
+import {useInput} from './hooks'
 
 import io from 'socket.io-client';
 const ENDPOINT = "http://127.0.0.1:3001";
@@ -12,7 +13,7 @@ const socket = io(ENDPOINT);
 function App() {
   const { login } = useContext(AuthContext);
   const history = useHistory();
-  const [message, setMessage] = useState("");
+  const [message, setMessage, handleMessageChange] = useInput();
   
   useEffect(() => {
     socket.on("reply-message", (msg) => console.log(msg));
@@ -22,9 +23,7 @@ function App() {
     login("new auth");
     history.push("/admin");
   };
-  
-  const handleChange = (event) => setMessage(event.target.value)
-  
+
   const emitMessage = () => socket.emit("send-message", message);
 
   const handleSubmit = (event) => {
@@ -43,7 +42,7 @@ function App() {
         Login
       </Button>
       <form onSubmit={handleSubmit}>
-        <Input type="text" placeholder={"Enter message"} value={message} onChange={handleChange} />
+        <Input type="text" placeholder={"Enter message"} value={message} onChange={handleMessageChange} />
         <Button type="submit" colorScheme='blue'>Send message</Button>
       </form>
     </div>
