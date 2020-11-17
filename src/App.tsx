@@ -1,37 +1,39 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { Button, ButtonGroup  , Input} from "@chakra-ui/react";
+import { Button, Input} from "@chakra-ui/react";
 import "./App.css";
 
 import { AuthContext } from "./AuthProvider";
 
 import io from 'socket.io-client';
 const ENDPOINT = "http://127.0.0.1:3001";
+const socket = io(ENDPOINT);
 
 function App() {
   const { login } = useContext(AuthContext);
   const history = useHistory();
   const [message, setMessage] = useState("");
-  const socket = io(ENDPOINT);
+  
+  useEffect(() => {
+    socket.on("reply-message", (msg) => console.log(msg));
+  }, [])
   
   const handleLogin = () => {
     login("new auth");
     history.push("/admin");
   };
   
-  const handleChange = (event) => {
-    setMessage(event.target.value)
-  }
+  const handleChange = (event) => setMessage(event.target.value)
   
-  const emitMessage = () => {
-    socket.emit("send-message", message);
-    socket.on("reply-message", (msg) => console.log(msg));
-  }
+  const emitMessage = () => socket.emit("send-message", message);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    emitMessage();
-    setMessage('');
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (message) {
+      emitMessage();
+      setMessage('');
+    }
   }
 
   return (
