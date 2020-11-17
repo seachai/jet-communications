@@ -3,6 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const query = require("./database/model.js");
 const queryTypes = require("./database/queryTypes.js");
+const socketIO = require('socket.io');
+const cors = require("cors");
 
 // SET UP ENV VARIABLES
 if (process.env.NODE_ENV !== "production") {
@@ -11,26 +13,26 @@ if (process.env.NODE_ENV !== "production") {
 
 // server
 const server = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // DATABASE CHECK
-const userSignUp = () => {
-  console.log("userSignUp function is working")
-  query(
-    queryTypes.INSERT_USERS,
-    ['admin/user', 'Anton', 'Abdukhamidov', 'Anton Abdukhamidov', 'Password', 1],   // (role, given_name, family_name, usernam, password, conversation_id)
-    (err, res) => {
-      if (err) {
-        console.log(`Error in INSERT_USERS. Error: ${err}`);
-      } else {
-        console.log("** INSERT_USERS returned: **", res);
-      }
-    }
-  );
-}
-userSignUp()
+// const userSignUp = () => {
+//   query(
+//     queryTypes.INSERT_USERS,
+//     ['admin/user', 'Anton', 'Abdukhamidov', 'Anton Abdukhamidov', 'Password', 1],   // (role, given_name, family_name, usernam, password, conversation_id)
+//     (err, res) => {
+//       if (err) {
+//         console.log(`Error in INSERT_USERS. Error: ${err}`);
+//       } else {
+//         // console.log("** INSERT_USERS returned: **", res);
+//       }
+//     }
+//   );
+// }
+// userSignUp()
 
 // SET UP
+server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 
@@ -42,7 +44,6 @@ server.use(bodyParser.urlencoded({ extended: true }));
 
 // REGULAR ROUTES
 server.get("/", (req, res) => {
-  console.log('process.env.ELEPHANTPASSWORD: ', process.env.ELEPHANTPASSWORD);
   res.status(200).json({ message: "hello" });
 });
 
@@ -72,11 +73,14 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(PORT);
+const serverPort = server.listen(PORT);
+const io = socketIO(serverPort);
 
-console.log("NODE_ENV mode is", process.env.NODE_ENV);
+io.on("connection", (socket) => {
+  // sending to all clients except sender
+  // socket.broadcast.emit('broadcast', 'hello friends!');
 
-console.log("Remember to check your .env file if you cannot connect to the database");
-
-console.log(`Server is listening at http://localhost:${PORT}`);
-console.log(`Client is live at http://localhost:8080`);
+  socket.on("send-message", (data) => {
+    console.log(data);
+  })
+})
