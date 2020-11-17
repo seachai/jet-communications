@@ -3,22 +3,26 @@ const twilioController = require("../controllers/twilioController");
 const userController = require("../controllers/userController");
 const router = express.Router();
 
-
-
 // USERS
 // create user
-router.post("/register", userController.signUp, async (req, res, next) => {
-  res.status(200).json('user registration successfully completed')
+router.post("/register", userController.signUp, (req, res, next) => {
+  res.status(200).json("user registration successfully completed");
 });
 
+router.post("/login", userController.login, (req, res, next) => {
+  res.status(200).json(res.locals.data);
+});
+
+router.post("/message", userController.postMessage, (req, res, next) => {
+  res.status(200).json("message is successfully saved to database");
+});
 
 router.get("/", (req, res) => {
   res.status(200).json({ message: "/api route ping" });
 });
 
-
 // router.post("/login", (req, res) => {
-  
+
 //   try {
 //     // verify user and password, and return the name
 //     res.status(200).json({ name, email });
@@ -52,7 +56,5 @@ router.get("/", (req, res) => {
 // });
 
 // // WHATSAPP
-
-
 
 module.exports = router;
