@@ -4,6 +4,11 @@ const INSERT_USERS = `
   RETURNING *;
 `;
 
+const CHECK_USER = `
+SELECT * FROM users
+WHERE username=$1 AND password=$2;
+`;
+
 const CREATE_CONVERSATION = `
 INSERT INTO conversations (user_id, admin_id)
 VALUES ($1, $2);
@@ -14,10 +19,9 @@ INSERT INTO messages (message)
 VALUES ($1);
 `;
 
-
 module.exports = {
   INSERT_USERS,
   CREATE_CONVERSATION,
-  INSERT_MESSAGE
+  INSERT_MESSAGE,
+  CHECK_USER,
 };
-
