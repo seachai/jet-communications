@@ -1,7 +1,8 @@
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+const query = require("./database/model.js");
+const queryTypes = require("./database/queryTypes.js");
 
 // SET UP ENV VARIABLES
 if (process.env.NODE_ENV !== "production") {
@@ -12,17 +13,22 @@ if (process.env.NODE_ENV !== "production") {
 const server = express();
 const PORT = process.env.PORT || 3000;
 
-// DATABASE
-const MONGO_URI = process.env.MONGO_URI;
-// mongoose
-//   .connect(MONGO_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     // sets the name of the DB that our collections are part of
-//     dbName: "tasselled-wobegong",
-//   })
-//   .then(() => console.log("Connected to Mongo DB."))
-//   .catch((err) => console.log(err));
+// DATABASE CHECK
+const userSignUp = () => {
+  console.log("userSignUp function is working")
+  query(
+    queryTypes.INSERT_USERS,
+    ['admin/user', 'Anton', 'Abdukhamidov', 'Anton Abdukhamidov', 'Password', 1],   // (role, given_name, family_name, usernam, password, conversation_id)
+    (err, res) => {
+      if (err) {
+        console.log(`Error in INSERT_USERS. Error: ${err}`);
+      } else {
+        console.log("** INSERT_USERS returned: **", res);
+      }
+    }
+  );
+}
+userSignUp()
 
 // SET UP
 server.use(bodyParser.json());
@@ -36,6 +42,7 @@ server.use(bodyParser.urlencoded({ extended: true }));
 
 // REGULAR ROUTES
 server.get("/", (req, res) => {
+  console.log('process.env.ELEPHANTPASSWORD: ', process.env.ELEPHANTPASSWORD);
   res.status(200).json({ message: "hello" });
 });
 
