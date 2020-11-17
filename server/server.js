@@ -42,8 +42,8 @@ server.get("/welcome", (req, res) => {
  * username for the client requesting a token, and takes a device ID as a query
  * parameter.
  */
-server.get("/token", function (request, response) {
-  const { identity } = request.query;
+server.get("/video/token", function (req, res) {
+  const { identity, room } = req.body;
 
   const VideoGrant = AccessToken.VideoGrant;
 
@@ -68,7 +68,7 @@ server.get("/token", function (request, response) {
   token.addGrant(grant);
 
   // Serialize the token to a JWT string.
-  response.send(token.toJwt());
+  res.send(token.toJwt());
 });
 
 // ERROR HANDLER

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { Button, Input } from "@chakra-ui/react";
 import axios from "axios";
 import "./App.css";
@@ -26,11 +26,6 @@ function App() {
   };
 
   const handleVideoChat = async () => {
-    console.log("handling chat");
-    console.log(process.env.REACT_APP_API_URL);
-    const endpoint = `${process.env.REACT_APP_API_URL}/video-chat`;
-    const { data } = await axios.post(endpoint);
-    console.log({ data });
     history.push("/video-chat");
   };
 
@@ -51,7 +46,7 @@ function App() {
       <Button onClick={handleLogin} colorScheme='blue'>
         Login
       </Button>
-      <Button onClick={handleVideoChat}>Start Video Chat</Button>
+      <Link to='/video-chat'>Start Video Chat</Link>
       <form onSubmit={handleSubmit}>
         <Input
           type='text'
