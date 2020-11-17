@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Input} from "@chakra-ui/react";
 import "./App.css";
@@ -7,8 +7,7 @@ import { AuthContext } from "./AuthProvider";
 import {useInput} from './hooks'
 
 import io from 'socket.io-client';
-const ENDPOINT = "http://127.0.0.1:3001";
-const socket = io(ENDPOINT);
+const socket = io(process.env.ENDPOINT);
 
 function App() {
   const { login } = useContext(AuthContext);
