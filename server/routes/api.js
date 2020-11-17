@@ -11,6 +11,7 @@ router.get("/", (req, res) => {
 router.post("/users", async (req, res, next) => {
   try {
     // TODO: Create a user in the database
+
     res.status(200);
   } catch (error) {
     console.log({ error });
