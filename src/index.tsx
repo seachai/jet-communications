@@ -3,28 +3,31 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 
-import AuthProvider from "./AuthProvider";
+import { AuthProvider } from "./context/AuthContext";
+import { FetchProvider } from "./context/FetchContext";
 import WithAuth from "./WithAuth";
 import Navigation from "./Navigation";
 import App from "./App";
-import EntryPage from './Components/EntryPage'
+import EntryPage from "./Components/EntryPage";
 import Admin from "./Components/Admin/";
 
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider>
-      <AuthProvider>
-        <Router>
-          <Navigation />
-          <Switch>
-            <Route exact path='/' component={EntryPage} />
-            <Route exact path='/main' component={App} />
-            <WithAuth path='/admin'>
-              <Admin />
-            </WithAuth>
-          </Switch>
-        </Router>
-      </AuthProvider>
+      <FetchProvider>
+        <AuthProvider>
+          <Router>
+            <Navigation />
+            <Switch>
+              <Route exact path='/' component={EntryPage} />
+              <Route exact path='/main' component={App} />
+              <WithAuth path='/admin'>
+                <Admin />
+              </WithAuth>
+            </Switch>
+          </Router>
+        </AuthProvider>
+      </FetchProvider>
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 
-export const AuthContext = createContext(null);
+const AuthContext = createContext();
+const { Provider } = AuthContext;
 
 interface initialAuthStateType {
   name: string;
@@ -24,8 +25,8 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    setIsLoggedIn(!!auth.token)
-  }, [auth])
+    setIsLoggedIn(!!auth.token);
+  }, [auth]);
 
   const login = (newAuth: initialAuthStateType) => {
     setAuth(newAuth);
@@ -38,11 +39,7 @@ const AuthProvider = ({ children }) => {
     setAuth(initialAuthState);
   };
 
-  return (
-    <AuthContext.Provider value={{ login, isLoggedIn, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <Provider value={{ login, isLoggedIn, logout }}>{children}</Provider>;
 };
 
-export default AuthProvider;
+export { AuthContext, AuthProvider };

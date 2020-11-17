@@ -2,11 +2,10 @@ const express = require("express");
 const twilioController = require("../controllers/twilioController");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.status(200).json({ message: "/api route ping" });
-});
-
-//
+// SET UP ENV VARIABLES
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 // USERS
 // create user
@@ -55,9 +54,7 @@ router.post("/conversations", async (req, res, next) => {
 });
 
 // VIDEO
-router.post("/video-chat", twilioController.startVideoChat, (req, res) => {
-  res.status(200).json({ message: "video chat created " });
-});
+router.post("/video-chat", twilioController.startVideoChat);
 
 // WHATSAPP
 

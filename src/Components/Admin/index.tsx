@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AuthContext } from "../../AuthProvider";
+import { AuthContext } from "../../context/AuthContext";
 import { Button } from "@chakra-ui/react";
 
 const Admin = () => {

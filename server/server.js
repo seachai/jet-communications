@@ -15,31 +15,14 @@ if (process.env.NODE_ENV !== "production") {
 const server = express();
 const PORT = process.env.PORT || 3001;
 
-// DATABASE CHECK
-// const userSignUp = () => {
-//   query(
-//     queryTypes.INSERT_USERS,
-//     ['admin/user', 'Anton', 'Abdukhamidov', 'Anton Abdukhamidov', 'Password', 1],   // (role, given_name, family_name, usernam, password, conversation_id)
-//     (err, res) => {
-//       if (err) {
-//         console.log(`Error in INSERT_USERS. Error: ${err}`);
-//       } else {
-//         // console.log("** INSERT_USERS returned: **", res);
-//       }
-//     }
-//   );
-// }
-// userSignUp()
-
-// SET UP
-// server.use(cors());
+server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 
-// // API ROUTER
+// API ROUTER
 const apiRouter = require("./routes/api");
 
-// // SEND API CALLS TO API ROUTER
+// SEND API CALLS TO API ROUTER
 server.use("/api", apiRouter);
 
 // REGULAR ROUTES
@@ -74,6 +57,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const serverPort = server.listen(PORT);
+
 const io = socketIO(serverPort, {
   cors: true,
   origins: ["http://127.0.0.1:8080"],
