@@ -31,6 +31,7 @@ function App() {
     const endpoint = `${process.env.REACT_APP_API_URL}/video-chat`;
     const { data } = await axios.post(endpoint);
     console.log({ data });
+    history.push("/video-chat");
   };
 
   const emitMessage = () => socket.emit("send-message", message);

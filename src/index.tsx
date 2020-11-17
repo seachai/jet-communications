@@ -25,8 +25,8 @@ ReactDOM.render(
               <WithAuth path='/admin'>
                 <Admin />
               </WithAuth>
-              <WithAuth>
-                <VideoChat path='/video-chat' />
+              <WithAuth path='/video-chat'>
+                <VideoChat />
               </WithAuth>
             </Switch>
           </Router>
