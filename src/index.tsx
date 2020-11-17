@@ -1,37 +1,20 @@
-import React, { useContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-  Link,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 // import "./index.css";
-import AuthProvider, { AuthContext } from "./AuthProvider";
+import AuthProvider from "./AuthProvider";
+import WithAuth from "./WithAuth";
+import Navigation from "./Navigation";
 import App from "./App";
 import Admin from "./Components/Admin/";
-
-// import reportWebVitals from './reportWebVitals';
-
-const WithAuth = ({ children, ...rest }) => {
-  const { isLoggedIn } = useContext(AuthContext);
-
-  return (
-    <Route
-      {...rest}
-      render={() => (isLoggedIn() ? children : <Redirect to='/404' />)}
-    />
-  );
-};
 
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider>
       <AuthProvider>
         <Router>
-          <Link to='/admin'>Admin</Link>
+          <Navigation />
           <Switch>
             <Route exact path='/' component={App} />
             <WithAuth path='/admin'>

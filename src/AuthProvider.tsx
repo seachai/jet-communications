@@ -2,9 +2,14 @@ import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext(null);
 
-const initialAuthState = {
-  token: null,
-  expiredAt: null,
+interface initialAuthStateType {
+  token: string;
+  expiredAt: string;
+}
+
+const initialAuthState: initialAuthStateType = {
+  token: "",
+  expiredAt: "",
 };
 
 const AuthProvider = ({ children }) => {
@@ -15,8 +20,8 @@ const AuthProvider = ({ children }) => {
     if (authFromLocalStorage) setAuth(authFromLocalStorage);
   }, []);
 
-  const login = (newAuth) => {
-    setAuth(newAuth);
+  const login = (newAuth: string) => {
+    setAuth({ ...auth, token: newAuth });
     console.log("logging in");
     localStorage.setItem("auth", JSON.stringify(newAuth));
   };
