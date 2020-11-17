@@ -3,7 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const query = require("./database/model.js");
 const queryTypes = require("./database/queryTypes.js");
-const socketIO = require('socket.io');
+const socketIO = require("socket.io");
 const cors = require("cors");
 
 // SET UP ENV VARIABLES
@@ -67,15 +67,15 @@ const PORT = process.env.PORT || 3001;
   saveMessage()
 
 // SET UP
-server.use(cors());
+// server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 
 // // API ROUTER
-// const apiRouter = require("./routes/api");
+const apiRouter = require("./routes/api");
 
 // // SEND API CALLS TO API ROUTER
-// server.use("/api", apiRouter);
+server.use("/api", apiRouter);
 
 // REGULAR ROUTES
 server.get("/", (req, res) => {
@@ -109,13 +109,17 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const serverPort = server.listen(PORT);
-const io = socketIO(serverPort);
+const io = socketIO(serverPort, {
+  cors: true,
+  origins: ["http://127.0.0.1:8080"],
+});
 
 io.on("connection", (socket) => {
-  // sending to all clients except sender
-  // socket.broadcast.emit('broadcast', 'hello friends!');
+  console.log("New client connected");
 
   socket.on("send-message", (data) => {
-    console.log(data);
-  })
-})
+    socket.broadcast.emit("reply-message", data);
+  });
+
+  socket.on("disconnect", () => console.log("Client disconnected"));
+});
