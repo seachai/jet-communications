@@ -9,7 +9,7 @@ const WithAuth = ({ children, ...props }) => {
   return (
     <Route
       {...props}
-      render={() => (isLoggedIn() ? children : <Redirect to='/' />)}
+      render={() => isLoggedIn ? children : <Redirect to='/' />}
     />
   );
 };

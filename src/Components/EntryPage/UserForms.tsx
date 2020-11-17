@@ -1,10 +1,12 @@
 import React, { useState, useContext } from 'react';
 import {FormControl, FormLabel, FormHelperText, Input, Button} from '@chakra-ui/react'
+// import dotenv from 'dotenv';
 import axios from 'axios'
 
 import { AuthContext } from '../../AuthProvider'
 import { useInput } from '../../hooks';
 
+// dotenv.config();
 
 const UserForms = () => {
   const [isRegistered, setIsRegistered] = useState(true);
@@ -15,7 +17,7 @@ const UserForms = () => {
   });
   const {login} = useContext(AuthContext)
 
-  const handleChange = ({ target: { name, value }}) => setValues({
+  const handleChange = ({target: {name, value}}) => setValues({
     ...values, 
     [name]: value
   })
@@ -34,19 +36,19 @@ const UserForms = () => {
      * Receive a response back from express (User Data?)
      * 
      */
-
+    
     const endpoint = isRegistered ? 
       `${process.env.REACT_APP_API_URL}/login` : 
       `${process.env.REACT_APP_API_URL}/register`;
     
-    const result = await axios.post(endpoint, values);
+    const {data, error} = await axios.post(endpoint, values);
+    
+    if (error) return alert(error.message);
 
-    if (result) login({ name: result.name, token: result.email })
-
-    // login({
-    //   name: 'my name',
-    //   token: values.email
-    // })
+    if (data) {
+      const { name, email } = data
+      login({ name, token: email })
+    }
   } 
   
   return (

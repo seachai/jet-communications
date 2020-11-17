@@ -26,7 +26,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     setIsLoggedIn(!!auth.token)
   }, [auth])
-
+  
   const login = (newAuth: initialAuthStateType) => {
     setAuth(newAuth);
     console.log("logging in");
@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ login, isLoggedIn, logout }}>
+    <AuthContext.Provider value={{ auth, login, isLoggedIn, logout }}>
       {children}
     </AuthContext.Provider>
   );

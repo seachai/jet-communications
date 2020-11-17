@@ -1,51 +1,25 @@
-import React, { useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom";
-import { Button, Input} from "@chakra-ui/react";
-import "./App.css";
+import React from "react";
+import { Switch, Route } from 'react-router-dom'
 
-import { AuthContext } from "./AuthProvider";
-import {useInput} from './hooks'
+import WithAuth from "./WithAuth";
+import Navigation from "./Navigation";
+import EntryPage from './Components/EntryPage'
+import ChatRoom from './Components/ChatRoom'
+import Admin from "./Components/Admin/";
 
-import io from 'socket.io-client';
-const socket = io(process.env.ENDPOINT);
-
-function App() {
-  const { login } = useContext(AuthContext);
-  const history = useHistory();
-  const [message, setMessage, handleMessageChange] = useInput();
-  
-  useEffect(() => {
-    socket.on("reply-message", (msg) => console.log(msg));
-  }, [])
-  
-  const handleLogin = () => {
-    login("new auth");
-    history.push("/admin");
-  };
-
-  const emitMessage = () => socket.emit("send-message", message);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (message) {
-      emitMessage();
-      setMessage('');
-    }
-  }
-
-  return (
-    <div className='App'>
-      <h1>App Component</h1>
-      <Button onClick={handleLogin} colorScheme='blue'>
-        Login
-      </Button>
-      <form onSubmit={handleSubmit}>
-        <Input type="text" placeholder={"Enter message"} value={message} onChange={handleMessageChange} />
-        <Button type="submit" colorScheme='blue'>Send message</Button>
-      </form>
-    </div>
-  );
-}
+const App = () => (
+  <>
+    <Navigation />
+    <Switch>
+      <Route exact path='/' component={EntryPage} />
+      <WithAuth path='/chatroom' >
+        <ChatRoom />
+      </WithAuth>
+      <WithAuth path='/admin'>
+        <Admin />
+      </WithAuth>
+    </Switch>
+  </>
+);
 
 export default App;

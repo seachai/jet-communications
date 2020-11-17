@@ -1,28 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { ChakraProvider } from "@chakra-ui/react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { ChakraProvider } from '@chakra-ui/react'
 
 import AuthProvider from "./AuthProvider";
-import WithAuth from "./WithAuth";
-import Navigation from "./Navigation";
-import App from "./App";
-import EntryPage from './Components/EntryPage'
-import Admin from "./Components/Admin/";
+import App from './App'
 
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider>
       <AuthProvider>
         <Router>
-          <Navigation />
-          <Switch>
-            <Route exact path='/' component={EntryPage} />
-            <Route exact path='/main' component={App} />
-            <WithAuth path='/admin'>
-              <Admin />
-            </WithAuth>
-          </Switch>
+          <App />
         </Router>
       </AuthProvider>
     </ChakraProvider>
