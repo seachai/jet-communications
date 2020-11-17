@@ -17,6 +17,7 @@ const AuthProvider = ({ children }) => {
 
   const login = (newAuth) => {
     setAuth(newAuth);
+    console.log("logging in");
     localStorage.setItem("auth", JSON.stringify(newAuth));
   };
 
@@ -25,7 +26,7 @@ const AuthProvider = ({ children }) => {
     setAuth(initialAuthState);
   };
 
-  const isLoggedIn = () => !!auth.token;
+  const isLoggedIn = () => (auth.token ? true : false);
 
   return (
     <AuthContext.Provider value={{ auth, login, isLoggedIn, logout }}>
