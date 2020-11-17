@@ -37,10 +37,10 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 
 // // API ROUTER
-// const apiRouter = require("./routes/api");
+const apiRouter = require("./routes/api");
 
 // // SEND API CALLS TO API ROUTER
-// server.use("/api", apiRouter);
+server.use("/api", apiRouter);
 
 // REGULAR ROUTES
 server.get("/", (req, res) => {
