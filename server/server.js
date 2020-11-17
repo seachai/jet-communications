@@ -16,10 +16,11 @@ const server = express();
 const PORT = process.env.PORT || 3001;
 
 // DATABASE CHECK
+// 1. USER INFO IS SAVED - OK
 // const userSignUp = () => {
 //   query(
 //     queryTypes.INSERT_USERS,
-//     ['admin/user', 'Anton', 'Abdukhamidov', 'Anton Abdukhamidov', 'Password', 1],   // (role, given_name, family_name, usernam, password, conversation_id)
+//     ['admin', 'Anton', 'Abdukhamidov', 'Anton Abdukhamidov', 'Password'],   // (role, given_name, family_name, username, password)
 //     (err, res) => {
 //       if (err) {
 //         console.log(`Error in INSERT_USERS. Error: ${err}`);
@@ -30,6 +31,40 @@ const PORT = process.env.PORT || 3001;
 //   );
 // }
 // userSignUp()
+
+//2. MESSAGE INFO IS SAVED
+  // 2.0 retrieve right user_id and admin_id from DB based on username information
+  // 2.1 CONVERSATION IS CREATED PROPERLY - OK
+  // const convCreate = () => {
+  //   query(
+  //     queryTypes.CREATE_CONVERSATION,
+  //     ['user_id TEST', 'admin_id TEST'],   // (user_id, admin_id)
+  //     (err, res) => {
+  //       if (err) {
+  //         console.log(`Error in CREATE_CONVERSATION. Error: ${err}`);
+  //       } else {
+  //         // console.log("** CREATE_CONVERSATION returned: **", res);
+  //       }
+  //     }
+  //   );
+  // }
+  // convCreate()
+
+  // 2.2 SAVING MESSAGES SENT TO 
+    const saveMessage = () => {
+    query(
+      queryTypes.INSERT_MESSAGE,
+      ['message TEST'],   // (message)
+      (err, res) => {
+        if (err) {
+          console.log(`Error in INSERT_MESSAGE. Error: ${err}`);
+        } else {
+          // console.log("** INSERT_MESSAGE returned: **", res);
+        }
+      }
+    );
+  }
+  saveMessage()
 
 // SET UP
 server.use(cors());
