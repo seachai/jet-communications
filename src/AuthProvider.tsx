@@ -3,8 +3,8 @@ import React, { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext(null);
 
 interface initialAuthStateType {
-  token: string;
-  expiredAt: string;
+  token: string | null;
+  expiredAt: string | null;
 }
 
 const initialAuthState: initialAuthStateType = {

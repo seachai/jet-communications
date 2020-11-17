@@ -13,23 +13,19 @@ function App() {
   const history = useHistory();
   const [message, setMessage] = useState("");
   const socket = io(ENDPOINT);
-
-  useEffect(() => {
-    socket.on("connect", emitMessage);
-  }, [])
-
-
+  
   const handleLogin = () => {
     login("new auth");
     history.push("/admin");
   };
-
+  
   const handleChange = (event) => {
     setMessage(event.target.value)
   }
-
-  const emitMessage = (socket) => {
+  
+  const emitMessage = () => {
     socket.emit("send-message", message);
+    socket.on("reply-message", (msg) => console.log(msg));
   }
 
   const handleSubmit = (e) => {
