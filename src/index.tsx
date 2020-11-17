@@ -9,7 +9,8 @@ import WithAuth from "./WithAuth";
 import Navigation from "./Navigation";
 import App from "./App";
 import EntryPage from "./Components/EntryPage";
-import Admin from "./Components/Admin/";
+import Admin from "./Components/Admin";
+import VideoChat from "./Components/VideoChat";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -23,6 +24,9 @@ ReactDOM.render(
               <Route exact path='/main' component={App} />
               <WithAuth path='/admin'>
                 <Admin />
+              </WithAuth>
+              <WithAuth>
+                <VideoChat path='/video-chat' />
               </WithAuth>
             </Switch>
           </Router>
