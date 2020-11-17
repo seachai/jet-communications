@@ -44,10 +44,10 @@ const UserForms = () => {
     
     // if (result) login(result)
 
-    login({
-      name: 'my name',
-      token: values.email
-    })
+    // login({
+    //   name: 'my name',
+    //   token: values.email
+    // })
   } 
   
   return (

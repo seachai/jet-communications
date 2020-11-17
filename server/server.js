@@ -1,10 +1,8 @@
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
-const query = require("./database/model.js");
-const queryTypes = require("./database/queryTypes.js");
 const socketIO = require("socket.io");
-const cors = require("cors");
+const apiRouter = require("./routes/api");
 
 // SET UP ENV VARIABLES
 if (process.env.NODE_ENV !== "production") {
@@ -15,64 +13,11 @@ if (process.env.NODE_ENV !== "production") {
 const server = express();
 const PORT = process.env.PORT || 3001;
 
-// DATABASE CHECK
-// 1. USER INFO IS SAVED - OK
-// const userSignUp = () => {
-//   query(
-//     queryTypes.INSERT_USERS,
-//     ['admin', 'Anton', 'Abdukhamidov', 'Anton Abdukhamidov', 'Password'],   // (role, given_name, family_name, username, password)
-//     (err, res) => {
-//       if (err) {
-//         console.log(`Error in INSERT_USERS. Error: ${err}`);
-//       } else {
-//         // console.log("** INSERT_USERS returned: **", res);
-//       }
-//     }
-//   );
-// }
-// userSignUp()
 
-//2. MESSAGE INFO IS SAVED
-  // 2.0 retrieve right user_id and admin_id from DB based on username information
-  // 2.1 CONVERSATION IS CREATED PROPERLY - OK
-  // const convCreate = () => {
-  //   query(
-  //     queryTypes.CREATE_CONVERSATION,
-  //     ['user_id TEST', 'admin_id TEST'],   // (user_id, admin_id)
-  //     (err, res) => {
-  //       if (err) {
-  //         console.log(`Error in CREATE_CONVERSATION. Error: ${err}`);
-  //       } else {
-  //         // console.log("** CREATE_CONVERSATION returned: **", res);
-  //       }
-  //     }
-  //   );
-  // }
-  // convCreate()
-
-  // 2.2 SAVING MESSAGES SENT TO 
-    const saveMessage = () => {
-    query(
-      queryTypes.INSERT_MESSAGE,
-      ['message TEST'],   // (message)
-      (err, res) => {
-        if (err) {
-          console.log(`Error in INSERT_MESSAGE. Error: ${err}`);
-        } else {
-          // console.log("** INSERT_MESSAGE returned: **", res);
-        }
-      }
-    );
-  }
-  saveMessage()
 
 // SET UP
-// server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
-
-// // API ROUTER
-const apiRouter = require("./routes/api");
 
 // // SEND API CALLS TO API ROUTER
 server.use("/api", apiRouter);
@@ -109,6 +54,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const serverPort = server.listen(PORT);
+
 const io = socketIO(serverPort, {
   cors: true,
   origins: ["http://127.0.0.1:8080"],
