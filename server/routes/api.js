@@ -1,5 +1,5 @@
 const express = require("express");
-
+const twilioController = require("../controllers/twilioController");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -13,7 +13,7 @@ router.post("/users", async (req, res, next) => {
     // TODO: Create a user in the database
 
     res.status(200);
-  } catch (error) {
+  } catch (e) {
     console.log({ error });
     return next({
       log: `Error caught in POST users. \n Error Message: ${e.errmsg || e}`,
@@ -28,7 +28,7 @@ router.post("/conversations", async (req, res, next) => {
   try {
     // TODO: Create a conversation in the database
     res.status(200);
-  } catch (error) {
+  } catch (e) {
     console.log({ error });
     return next({
       log: `Error caught in POST conversations. \n Error Message: ${e.errmsg || e}`,
@@ -38,16 +38,8 @@ router.post("/conversations", async (req, res, next) => {
 });
 
 // VIDEO
-router.post("/video-chat", async (req, res, next) => {
-  try {
-    // TODO: Insantiate a video chat on Twilio
-  } catch (error) {
-    console.log({ error });
-    return next({
-      log: `Error caught in POST video-chat. \n Error Message: ${e.errmsg || e}`,
-      message: { err: e.errmsg || e },
-    });
-  }
+router.post("/video-chat", twilioController.startVideoChat, (req, res) => {
+  res.status(200).json({ message: "video chat created " });
 });
 
 // WHATSAPP
