@@ -1,3 +1,4 @@
+const { receiveMessageOnPort } = require("worker_threads");
 const query = require("../database/model.js");
 const queryTypes = require("../database/queryTypes.js");
 const userController = {};
@@ -50,11 +51,9 @@ userController.login = (req, res, next) => {
 };
 
 userController.postMessage = (req, res, next) => {
-  console.log("inside userController.login");
-  const { message } = req.body;
-  console.log("message: ", message);
+  const { message, user_id } = req.body;
 
-  query(queryTypes.INSERT_MESSAGE, [message]) // (message)
+  query(queryTypes.INSERT_MESSAGE, [user_id, message]) // (message)
     .then((data) => {
       return next();
     })
@@ -64,6 +63,25 @@ userController.postMessage = (req, res, next) => {
         message: {
           err:
             "Error occurred in userController.postMessage. Check server logs for details.",
+        },
+      });
+    });
+};
+
+userController.getMessages = (req, res, next) => {
+  const { user_id } = req.body;
+
+  query(queryTypes.GET_MESSAGES, [user_id]) // (user_id)
+    .then((data) => {
+      res.locals.data = data.rows;
+      return next();
+    })
+    .catch((error) => {
+      return next({
+        log: `userController.getMessages:  Error posting tasks data from data base:${error.status}`,
+        message: {
+          err:
+            "Error occurred in userController.getMessages. Check server logs for details.",
         },
       });
     });

@@ -17,38 +17,13 @@ router.post("/message", userController.postMessage, (req, res, next) => {
   res.status(200).json("message is successfully saved to database");
 });
 
+router.get("/getMessages", userController.getMessages, (req, res, next) => {
+  res.status(200).json(res.locals.data);
+});
+
 router.get("/", (req, res) => {
   res.status(200).json({ message: "/api route ping" });
 });
-
-// router.post("/login", (req, res) => {
-
-//   try {
-//     // verify user and password, and return the name
-//     res.status(200).json({ name, email });
-//   } catch (e) {
-//     console.log({ error });
-//     return next({
-//       log: `Error caught in POST users. \n Error Message: ${e.errmsg || e}`,
-//       message: { err: e.errmsg || e },
-//     });
-//   }
-// });
-
-// // CONVERSATIONS
-// // create conversation
-// router.post("/conversations", async (req, res, next) => {
-//   try {
-//     // TODO: Create a conversation in the database
-//     res.status(200);
-//   } catch (e) {
-//     console.log({ error });
-//     return next({
-//       log: `Error caught in POST conversations. \n Error Message: ${e.errmsg || e}`,
-//       message: { err: e.errmsg || e },
-//     });
-//   }
-// });
 
 // VIDEO
 // router.post("/video-chat", twilioController.startVideoChat, (req, res) => {

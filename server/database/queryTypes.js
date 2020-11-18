@@ -9,19 +9,19 @@ SELECT * FROM users
 WHERE username=$1 AND password=$2;
 `;
 
-const CREATE_CONVERSATION = `
-INSERT INTO conversations (user_id, admin_id)
+const INSERT_MESSAGE = `
+INSERT INTO messages (user_id, message)
 VALUES ($1, $2);
 `;
 
-const INSERT_MESSAGE = `
-INSERT INTO messages (message)
-VALUES ($1);
+const GET_MESSAGES = `
+SELECT * FROM messages
+WHERE user_id=$1;
 `;
 
 module.exports = {
   INSERT_USERS,
-  CREATE_CONVERSATION,
   INSERT_MESSAGE,
   CHECK_USER,
+  GET_MESSAGES,
 };
