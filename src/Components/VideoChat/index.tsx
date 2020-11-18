@@ -33,14 +33,14 @@ export default function VideoChat() {
     Video.connect(token, {
       name: roomName,
     }).then((room) => {
-      setRoom(room);
+      setRoomName(room);
       room.on("participantConnected", participantConnected);
       room.on("participantDisconnected", participantDisconnected);
       room.participants.forEach(participantConnected);
     });
 
     return () => {
-      setRoom((currentRoom) => {
+      setRoomName((currentRoom) => {
         if (currentRoom && currentRoom.localParticipant.state === "connected") {
           currentRoom.localParticipant.tracks.forEach(function (trackPublication) {
             trackPublication.track.stop();
