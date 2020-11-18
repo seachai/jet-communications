@@ -54,7 +54,8 @@ twilioController.getToken = (req, res, next) => {
     });
     token.addGrant(grant);
 
-    // console.log({ token });
+    console.log({ token });
+    console.log(typeof token);
 
     // Serialize the token to a JWT string.
     res.send(token.toJwt());
