@@ -11,13 +11,7 @@ userController.signUp = (req, res, next) => {
       // IF USERNAME IS FREE - MAKE A QUERY TO SAVE IT IN THE DB
       if (!data.fields[0]) {
         // console.log("data from CHECK_USERNAME function", data);
-        query(queryTypes.INSERT_USERS, [
-          "user",
-          name,
-          "Abdukhamidov",
-          email,
-          password,
-        ])
+        query(queryTypes.INSERT_USERS, ["user", name, "Abdukhamidov", email, password])
           .then((data) => {
             data = data.rows[0];
             res.locals.user = { name: data.given_name, email: data.username };
@@ -27,8 +21,7 @@ userController.signUp = (req, res, next) => {
             return next({
               log: `userController.signUp:  Error posting tasks data from data base:${error.status}`,
               message: {
-                err:
-                  "Error occurred in userController.signUp. Check server logs for details.",
+                err: "Error occurred in userController.signUp. Check server logs for details.",
               },
             });
           });
@@ -43,8 +36,7 @@ userController.signUp = (req, res, next) => {
       return next({
         log: `userController.signUp:  Error checking whether username exists in database:${error.status}`,
         message: {
-          err:
-            "Error occurred in userController.signUp . Check server logs for details.",
+          err: "Error occurred in userController.signUp . Check server logs for details.",
         },
       });
     });
@@ -63,8 +55,7 @@ userController.login = (req, res, next) => {
       return next({
         log: `userController.login:  Error posting tasks data from data base:${error.status}`,
         message: {
-          err:
-            "Error occurred in userController.login. Check server logs for details.",
+          err: "Error occurred in userController.login. Check server logs for details.",
         },
       });
     });
@@ -81,8 +72,7 @@ userController.postMessage = (req, res, next) => {
       return next({
         log: `userController.postMessage:  Error posting tasks data from data base:${error.status}`,
         message: {
-          err:
-            "Error occurred in userController.postMessage. Check server logs for details.",
+          err: "Error occurred in userController.postMessage. Check server logs for details.",
         },
       });
     });
@@ -100,8 +90,7 @@ userController.getMessages = (req, res, next) => {
       return next({
         log: `userController.getMessages:  Error posting tasks data from data base:${error.status}`,
         message: {
-          err:
-            "Error occurred in userController.getMessages. Check server logs for details.",
+          err: "Error occurred in userController.getMessages. Check server logs for details.",
         },
       });
     });

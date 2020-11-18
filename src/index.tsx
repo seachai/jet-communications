@@ -5,6 +5,8 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import { AuthProvider } from "./context/AuthContext";
 import { FetchProvider } from "./context/FetchContext";
+import { TwilioVideoProvider } from "./hooks/useTwilioVideo";
+
 import App from "./App";
 
 ReactDOM.render(
@@ -12,9 +14,11 @@ ReactDOM.render(
     <ChakraProvider>
       <FetchProvider>
         <AuthProvider>
-          <Router>
-            <App />
-          </Router>
+          <TwilioVideoProvider>
+            <Router>
+              <App />
+            </Router>
+          </TwilioVideoProvider>
         </AuthProvider>
       </FetchProvider>
     </ChakraProvider>

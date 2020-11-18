@@ -33,7 +33,7 @@ const ChatRoom = () => {
 
   return (
     <Flex minHeight='100vh' width='full' align='center' justifyContent='center'>
-      <Box 
+      <Box
         borderWidth={1}
         p={12}
         // maxWidth='1000px'
