@@ -1,56 +1,95 @@
 // @ts-nocheck
-import React, { useState, useContext, useEffect } from "react";
-import Video from "twilio-video";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-export default function VideoChat() {
-  const { auth } = useContext(AuthContext);
+import useTwilioVideo from "../../hooks/useTwilioVideo";
+
+const VideoChat = ({ roomID }) => {
+  const initialRoom = "DailyStandup";
   const [token, setToken] = useState(null);
-  const [participants, setParticipants] = useState([]);
-  const [roomName, setRoomName] = useState("myroom");
+  const [room, setRoom] = useState(() => initialRoom);
+  const videoRef = useRef();
 
+  const {
+    activeRoom,
+    startVideo,
+    leaveRoom,
+    // getParticipantToken,
+  } = useTwilioVideo();
+
+  const getParticipantToken = async ({ identity, room }) => {
+    console.log("participant token");
+    const { data } = await axios({
+      method: "POST",
+      url: `${process.env.REACT_APP_API_URL}/video/token`,
+      data: { identity, room },
+    });
+
+    setToken(data);
+    return data;
+  };
+
+  // Get the token
   useEffect(() => {
-    async function getToken() {
-      const endpoint = `${process.env.REACT_APP_API_URL}/video/token`;
-      // const { data } = await axios.post(endpoint, { identity: auth.name, room: roomName });
-      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/video-chat`);
-      console.log(data);
-      setToken(data);
+    console.log("getting token");
+    async function fn() {
+      return await getParticipantToken({ identity: "James", room });
     }
-
-    getToken();
+    const result = fn();
+    console.log({ result });
   }, []);
 
+  // Create the room
   useEffect(() => {
     if (!token) return;
 
-    const participantConnected = (participant) => {
-      setParticipants((prevParticipants) => [...prevParticipants, participant]);
-    };
-    const participantDisconnected = (participant) => {
-      setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
-    };
-  }, [roomName, token]);
+    async function fn() {
+      return await window.Twilio.Video.connect(token, {
+        name: room,
+        audio: true,
+        video: { width: 640 },
+        logLevel: "info",
+      });
+    }
 
-  const remoteParticipants = participants.map((participant) => (
-    <p key={participant.sid}>{participant.identity}</p>
-  ));
+    fn().then(async (res) => {
+      const localTrack = await window.Twilio.Video.createLocalVideoTrack().catch((error) => {
+        console.error(`Unable to create local tracks: ${error.message}`);
+      });
 
-  const handleLogout = () => {
-    console.log("logging out");
-    setToken(null);
-  };
+      // Attach the local video if it’s not already visible.
+      if (!videoRef.current.hasChildNodes()) {
+        const localEl = localTrack.attach();
+        localEl.className = "local-video";
+
+        videoRef.current.appendChild(localEl);
+      }
+
+      // if (!activeRoom) {
+      //   startVideo();
+      // }
+
+      // Add a window listener to disconnect if the tab is closed. This works
+      // around a looooong lag before Twilio catches that the video is gone.
+      window.addEventListener("beforeunload", leaveRoom);
+    });
+
+    return () => {
+      window.removeEventListener("beforeunload", leaveRoom);
+    };
+  }, [token, roomID, activeRoom, startVideo, leaveRoom]);
 
   return (
-    <div className='room'>
-      <h2>Room: {roomName}</h2>
-      <button onClick={handleLogout}>Log out</button>
-      <div className='local-participant'>
-        {room ? <p key={room.localParticipant.sid}>{room.localParticipant.identity}</p> : ""}
-      </div>
-      <h3>Remote Participants</h3>
-      <div className='remote-participants'>{remoteParticipants}</div>
-    </div>
+    <>
+      <h1>Room: “{roomID}”</h1>
+      {activeRoom && (
+        <button className='leave-room' onClick={leaveRoom}>
+          Leave Room
+        </button>
+      )}
+      <div className='chat' ref={videoRef} />
+    </>
   );
-}
+};
+
+export default VideoChat;

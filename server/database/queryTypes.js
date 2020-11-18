@@ -9,6 +9,11 @@ SELECT * FROM users
 WHERE username=$1 AND password=$2;
 `;
 
+const CHECK_USERNAME = `
+SELECT * FROM users
+WHERE username=$1;
+`;
+
 const INSERT_MESSAGE = `
 INSERT INTO messages (user_id, message)
 VALUES ($1, $2);
@@ -24,4 +29,5 @@ module.exports = {
   INSERT_MESSAGE,
   CHECK_USER,
   GET_MESSAGES,
+  CHECK_USERNAME,
 };
