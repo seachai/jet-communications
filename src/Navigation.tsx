@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { Button, Flex, Spacer, Box, Heading, Text } from "@chakra-ui/react";
+import { Button, Flex, Box, Heading, Text } from "@chakra-ui/react";
 
 import { AuthContext } from "./context/AuthContext";
 
@@ -13,7 +13,8 @@ const MenuItems = ({ children }) => (
 const Navigation = () => {
   const { auth, isLoggedIn, logout } = useContext(AuthContext);
 
-  console.log({ auth });
+  const userName = auth.name.charAt(0).toUpperCase() + auth.name.slice(1);
+
   return (
     <Flex
       as="nav"
@@ -26,43 +27,32 @@ const Navigation = () => {
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" size="lg" letterSpacing={"-.1rem"}>
-          JigglyPuff
+          <NavLink className='chakra-link' to='/'>
+            JigglyPuff
+          </NavLink>
         </Heading>
       </Flex>
-      <Box
-        display={{ sm: "block", md: "flex" }}
-        width={{ sm: "full", md: "auto" }}
-        alignItems="center"
-        flexGrow={1}
-      >
-        <MenuItems>
-          <NavLink className='chakra-link' to='/'>
-            Home
-          </NavLink>
-        </MenuItems>
-        <MenuItems>
-          <NavLink className='chakra-link' to='/admin'>
-            Go to Admin
-          </NavLink>
-        </MenuItems>
-      </Box>
 
       {isLoggedIn && (
-        <>
-          <Box
-            display={{ sm: "block", md: "flex" }}
-            width={{ sm: "full", md: "auto" }}
-            alignItems="center"
-            flexGrow={1}
-          >
-            <MenuItems>Hello, {auth.name}</MenuItems>
-            <MenuItems>
-              <Button onClick={logout} colorScheme='red'>
-                Logout
-              </Button>
-            </MenuItems>
-          </Box>
-        </>
+        <Box
+          display={{ sm: "block", md: "flex" }}
+          width={{ sm: "full", md: "auto" }}
+          alignItems="center"
+          flexGrow={1}
+          flex="none"
+        >
+          <MenuItems>
+            <NavLink className='chakra-link' to='/admin'>
+              Admin
+            </NavLink>
+          </MenuItems>
+          <MenuItems>Hello, {userName}</MenuItems>
+          <MenuItems>
+            <Button onClick={logout} bg="transparent" border="1px">
+              Logout
+            </Button>
+          </MenuItems>
+        </Box>
       )}
     </Flex>
   );

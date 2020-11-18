@@ -1,22 +1,18 @@
 // @ts-nocheck
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 
-import useTwilioVideo from "../../hooks/useTwilioVideo";
+import { AuthContext } from "../../context/AuthContext";
+import { leaveRoom } from "../../hooks/useTwilioVideo";
 
 const VideoChat = ({ roomID }) => {
-  const initialRoom = "DailyStandup";
+  const { auth } = useContext(AuthContext);
+  const [room, setRoom] = useState(null);
   const [token, setToken] = useState(null);
-  const [room, setRoom] = useState(() => initialRoom);
+  const [participants, setParticipants] = useState([]);
   const videoRef = useRef();
 
-  const {
-    activeRoom,
-    startVideo,
-    leaveRoom,
-    // getParticipantToken,
-  } = useTwilioVideo();
-
+  // Helper to get a token
   const getParticipantToken = async ({ identity, room }) => {
     console.log("participant token");
     const { data } = await axios({
@@ -29,7 +25,11 @@ const VideoChat = ({ roomID }) => {
     return data;
   };
 
-  // Get the token
+  const remoteParticipants = participants.map((participant) => (
+    <p key={participant.sid}>{participant.identity}</p>
+  ));
+
+  // Get the token on initial render
   useEffect(() => {
     console.log("getting token");
     async function fn() {
@@ -45,7 +45,7 @@ const VideoChat = ({ roomID }) => {
 
     async function fn() {
       return await window.Twilio.Video.connect(token, {
-        name: room,
+        name: "Support Room",
         audio: true,
         video: { width: 640 },
         logLevel: "info",
@@ -65,10 +65,6 @@ const VideoChat = ({ roomID }) => {
         videoRef.current.appendChild(localEl);
       }
 
-      // if (!activeRoom) {
-      //   startVideo();
-      // }
-
       // Add a window listener to disconnect if the tab is closed. This works
       // around a looooong lag before Twilio catches that the video is gone.
       window.addEventListener("beforeunload", leaveRoom);
@@ -77,16 +73,21 @@ const VideoChat = ({ roomID }) => {
     return () => {
       window.removeEventListener("beforeunload", leaveRoom);
     };
-  }, [token, roomID, activeRoom, startVideo, leaveRoom]);
+  }, [token]);
 
   return (
     <>
-      <h1>Room: “{roomID}”</h1>
-      {activeRoom && (
-        <button className='leave-room' onClick={leaveRoom}>
-          Leave Room
-        </button>
-      )}
+      <div>
+        <p>Username: {auth.name}</p>
+        <p>Room name:</p>
+        <p>Token: {token}</p>
+      </div>
+      <hr />
+      <div className='local-participant'>
+        {room ? <p key={room.localParticipant.sid}>{room.localParticipant.identity}</p> : ""}
+      </div>
+      <h3>Remote Participants</h3>
+      <div className='remote-participants'>{remoteParticipants}</div>
       <div className='chat' ref={videoRef} />
     </>
   );
