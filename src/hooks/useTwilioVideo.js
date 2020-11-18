@@ -92,7 +92,10 @@ const useTwilioVideo = () => {
 
   const roomName = Date.now();
 
-  const getParticipantToken = async ({ identity = "James", room = roomName }) => {
+  const getParticipantToken = async ({
+    identity = "James",
+    room = roomName,
+  }) => {
     console.log("participant token");
     const result = await axios({
       method: "POST",
