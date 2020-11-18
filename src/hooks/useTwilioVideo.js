@@ -123,10 +123,12 @@ const useTwilioVideo = () => {
     console.log("test");
     console.log({ window });
 
+    console.log({ videoRef });
+
     // // Add your own video and audio tracks so you can see yourself.
-    // const localTrack = await createLocalVideoTrack().catch((error) => {
-    //   console.error(`Unable to create local tracks: ${error.message}`);
-    // });
+    const localTrack = await createLocalVideoTrack().catch((error) => {
+      console.error(`Unable to create local tracks: ${error.message}`);
+    });
 
     // Attach the local video if it’s not already visible.
     if (!videoRef.current.hasChildNodes()) {

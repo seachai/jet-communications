@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// @ts-nocheck
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 import useTwilioVideo from "../../hooks/useTwilioVideo";
@@ -7,8 +8,9 @@ const VideoChat = ({ roomID }) => {
   const initialRoom = "DailyStandup";
   const [token, setToken] = useState(null);
   const [room, setRoom] = useState(() => initialRoom);
+  const videoRef = useRef();
+
   const {
-    videoRef,
     activeRoom,
     startVideo,
     leaveRoom,
@@ -50,15 +52,27 @@ const VideoChat = ({ roomID }) => {
       });
     }
 
-    fn().then((activeRoom) => console.log({ activeRoom }));
+    fn().then(async (res) => {
+      const localTrack = await window.Twilio.Video.createLocalVideoTrack().catch((error) => {
+        console.error(`Unable to create local tracks: ${error.message}`);
+      });
 
-    // if (!activeRoom) {
-    //   startVideo();
-    // }
+      // Attach the local video if it’s not already visible.
+      if (!videoRef.current.hasChildNodes()) {
+        const localEl = localTrack.attach();
+        localEl.className = "local-video";
 
-    // Add a window listener to disconnect if the tab is closed. This works
-    // around a looooong lag before Twilio catches that the video is gone.
-    window.addEventListener("beforeunload", leaveRoom);
+        videoRef.current.appendChild(localEl);
+      }
+
+      // if (!activeRoom) {
+      //   startVideo();
+      // }
+
+      // Add a window listener to disconnect if the tab is closed. This works
+      // around a looooong lag before Twilio catches that the video is gone.
+      window.addEventListener("beforeunload", leaveRoom);
+    });
 
     return () => {
       window.removeEventListener("beforeunload", leaveRoom);
