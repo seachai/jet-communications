@@ -1,14 +1,16 @@
 // @ts-nocheck
 import React, { useState, useContext, useEffect } from "react";
-import Video from "twilio-video";
 import { AuthContext } from "../../context/AuthContext";
+import useTwilioVideo from "../../hooks/useTwilioVideo";
 import axios from "axios";
 
 export default function VideoChat() {
   const { auth } = useContext(AuthContext);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useTwilioVideo();
   const [participants, setParticipants] = useState([]);
   const [roomName, setRoomName] = useState("myroom");
+
+  console.log("chatroom");
 
   useEffect(() => {
     async function getToken() {
