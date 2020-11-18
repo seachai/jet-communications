@@ -19,7 +19,7 @@ CREATE TABLE conversations (
 );
 
 CREATE TABLE messages (
-  id INT REFERENCES conversations(conversation_id),
+  user_id TEXT,
   message TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   deleted_at TEXT
