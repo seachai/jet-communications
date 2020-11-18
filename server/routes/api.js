@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== "production") {
 // create user
 router.post("/register", userController.signUp, (req, res, next) => {
   const { user } = res.locals;
-  res.status(200).json(user);
+  res.status(200).json(user); // MAKE SURE THAT UNIQUE USERNAME IS TAKEN INTO ACCOUNT ON THE FRONTEND
 });
 
 router.post("/login", userController.login, (req, res, next) => {
