@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useRef } from "react";
 import axios from "axios";
-import { connect, createLocalVideoTrack } from "twilio-video";
-
+// import { connect, createLocalVideoTrack } from "twilio-video";
+// import Video from "twilio-video";
 const initialContext = {
   identity: false,
   room: false,
@@ -90,7 +90,10 @@ const useTwilioVideo = () => {
   const videoRef = useRef();
   const { room, token, activeRoom } = store;
 
-  const getParticipantToken = async ({ identity, room }) => {
+  const roomName = Date.now();
+
+  const getParticipantToken = async ({ identity = "James", room = roomName }) => {
+    console.log("participant token");
     const result = await axios({
       method: "POST",
       url: `${process.env.REACT_APP_API_URL}/video/token}`,
@@ -105,8 +108,10 @@ const useTwilioVideo = () => {
       return;
     }
 
+    console.log(window);
+
     // Connect to the appropriate Twilio video chat room.
-    const activeRoom = await connect(token, {
+    const activeRoom = await window.Twilio.Video.connect(token, {
       name: room,
       audio: true,
       video: { width: 640 },
@@ -115,10 +120,13 @@ const useTwilioVideo = () => {
       console.error(`Unable to join the room: ${error.message}`);
     });
 
-    // Add your own video and audio tracks so you can see yourself.
-    const localTrack = await createLocalVideoTrack().catch((error) => {
-      console.error(`Unable to create local tracks: ${error.message}`);
-    });
+    console.log("test");
+    console.log({ window });
+
+    // // Add your own video and audio tracks so you can see yourself.
+    // const localTrack = await createLocalVideoTrack().catch((error) => {
+    //   console.error(`Unable to create local tracks: ${error.message}`);
+    // });
 
     // Attach the local video if it’s not already visible.
     if (!videoRef.current.hasChildNodes()) {

@@ -1,22 +1,60 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import useTwilioVideo from "../../hooks/useTwilioVideo";
 
 const VideoChat = ({ roomID }) => {
-  const { token, videoRef, activeRoom, startVideo, leaveRoom } = useTwilioVideo();
+  const initialRoom = "DailyStandup";
+  const [token, setToken] = useState(null);
+  const [room, setRoom] = useState(() => initialRoom);
+  const {
+    videoRef,
+    activeRoom,
+    startVideo,
+    leaveRoom,
+    // getParticipantToken,
+  } = useTwilioVideo();
 
+  const getParticipantToken = async ({ identity, room }) => {
+    console.log("participant token");
+    const { data } = await axios({
+      method: "POST",
+      url: `${process.env.REACT_APP_API_URL}/video/token`,
+      data: { identity, room },
+    });
+
+    setToken(data);
+    return data;
+  };
+
+  // Get the token
   useEffect(() => {
-    // if (!roomID) {
-    //   navigate("/");
-    // }
-
-    // if (!token) {
-    //   navigate("/", { state: { room: roomID } });
-    // }
-
-    if (!activeRoom) {
-      startVideo();
+    console.log("getting token");
+    async function fn() {
+      return await getParticipantToken({ identity: "James", room });
     }
+    const result = fn();
+    console.log({ result });
+  }, []);
+
+  // Create the room
+  useEffect(() => {
+    if (!token) return;
+
+    async function fn() {
+      return await window.Twilio.Video.connect(token, {
+        name: room,
+        audio: true,
+        video: { width: 640 },
+        logLevel: "info",
+      });
+    }
+
+    fn().then((activeRoom) => console.log({ activeRoom }));
+
+    // if (!activeRoom) {
+    //   startVideo();
+    // }
 
     // Add a window listener to disconnect if the tab is closed. This works
     // around a looooong lag before Twilio catches that the video is gone.

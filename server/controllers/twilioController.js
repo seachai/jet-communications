@@ -35,8 +35,11 @@ twilioController.getToken = (req, res, next) => {
   try {
     const { identity, room } = req.body;
 
+    console.log({ AccessToken });
+
     const VideoGrant = AccessToken.VideoGrant;
 
+    console.log({ VideoGrant });
     // Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
     const MAX_ALLOWED_SESSION_DURATION = 14400;
 
@@ -51,10 +54,13 @@ twilioController.getToken = (req, res, next) => {
     token.identity = identity;
 
     // Grant the access token Twilio Video capabilities.
-    const grant = new VideoGrant();
+    const grant = new VideoGrant({
+      room,
+    });
+    console.log({ grant });
     token.addGrant(grant);
 
-    console.log({ token });
+    // console.log({ token });
 
     // Serialize the token to a JWT string.
     res.send(token.toJwt());

@@ -32,7 +32,7 @@ const ChatRoom = () => {
 
   return (
     <Flex minHeight='100vh' width='full' align='center' justifyContent='center'>
-      <Box 
+      <Box
         borderWidth={1}
         p={12}
         maxWidth='1000px'
@@ -42,16 +42,21 @@ const ChatRoom = () => {
       >
         <div className='ChatRoom'>
           <Heading>ChatRoom</Heading>
-            <MessageList messageList={messageList} />
-            <form onSubmit={handleSubmit}>
-              <Input type='text' placeholder={"Enter message"} value={message} onChange={handleChange} />
-              <Button type='submit' colorScheme='blue'>
-                Send message
-              </Button>
-            </form>
-            <Link to='/video-chat' colorScheme='blue'>
-              Transfer to Video
-            </Link>
+          <MessageList messageList={messageList} />
+          <form onSubmit={handleSubmit}>
+            <Input
+              type='text'
+              placeholder={"Enter message"}
+              value={message}
+              onChange={handleChange}
+            />
+            <Button type='submit' colorScheme='blue'>
+              Send message
+            </Button>
+          </form>
+          <Button colorScheme='blue'>
+            <Link to='/video-chat'>Transfer to Video</Link>
+          </Button>
         </div>
       </Box>
     </Flex>
