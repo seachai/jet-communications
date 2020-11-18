@@ -22,9 +22,6 @@ server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 
-// API ROUTER
-const apiRouter = require("./routes/api");
-
 // SEND API CALLS TO API ROUTER
 server.use("/api", apiRouter);
 

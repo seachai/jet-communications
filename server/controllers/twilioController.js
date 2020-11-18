@@ -9,7 +9,7 @@ const client = require("twilio")(
   "ab660c50f671307086a8d55f9d2a3d52"
 );
 
-// const twilioController = {};
+const twilioController = {};
 
 twilioController.startVideoChat = (req, res, next) => {
   const roomName = new Date().now;
@@ -23,4 +23,4 @@ twilioController.startVideoChat = (req, res, next) => {
     .catch((e) => console.log({ e }));
 };
 
-// module.exports = twilioController;
+module.exports = twilioController;
