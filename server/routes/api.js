@@ -43,4 +43,9 @@ router.get("/", (req, res) => {
 // GET ACCESS TOKEN FOR TWILIO VIDEO CHAT
 router.post("/video/token", twilioController.getToken);
 
+router.post("/video/callback", (req, res) => {
+  console.log({ req });
+  return res.end();
+});
+
 module.exports = router;

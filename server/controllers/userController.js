@@ -48,7 +48,14 @@ userController.login = (req, res, next) => {
 
   query(queryTypes.CHECK_USER, [username, password]) // (username, password)
     .then((data) => {
-      res.locals.data = data.rows[0];
+      const dataSent =
+        data.rows.length === 0
+          ? "wrong"
+          : {
+              name: data.rows[0].given_name,
+              email: data.rows[0].username,
+            };
+      res.locals.data = dataSent;
       return next();
     })
     .catch((error) => {

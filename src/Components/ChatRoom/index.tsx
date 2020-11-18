@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { Button, Input, Heading, Flex, Box } from "@chakra-ui/react";
+import { Button, Input, Heading, Flex, Box, FormControl } from "@chakra-ui/react";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import io from "socket.io-client";
 
 import { useInput } from "../../hooks";
@@ -35,29 +36,24 @@ const ChatRoom = () => {
       <Box
         borderWidth={1}
         p={12}
-        maxWidth='1000px'
-        borderRadius={4}
-        textAlign='center'
+        // maxWidth='1000px'
+        // borderRadius={4}
+        // textAlign='center'
         boxShadow='lg'
       >
-        <div className='ChatRoom'>
-          <Heading>ChatRoom</Heading>
-          <MessageList messageList={messageList} />
-          <form onSubmit={handleSubmit}>
-            <Input
-              type='text'
-              placeholder={"Enter message"}
-              value={message}
-              onChange={handleChange}
-            />
-            <Button type='submit' colorScheme='blue'>
-              Send message
+        <Heading mb={4}>Chat</Heading>
+        <MessageList messageList={messageList} />
+        <FormControl>
+          <form onSubmit={handleSubmit} style={{ display: "flex" }}>
+            <Input type='text' placeholder={"Enter message"} value={message} onChange={handleChange} />
+            <Button type='submit' colorScheme='blue' variant="outline" rightIcon={<ArrowForwardIcon w={4} h={4}/>}>
+              Send
             </Button>
           </form>
-          <Button colorScheme='blue'>
-            <Link to='/video-chat'>Transfer to Video</Link>
-          </Button>
-        </div>
+        </FormControl>
+        <Link to='/video-chat'>
+          Transfer to Video
+        </Link>
       </Box>
     </Flex>
   );
