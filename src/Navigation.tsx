@@ -1,29 +1,67 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { Button, Flex, Spacer } from "@chakra-ui/react";
+import { Button, Flex, Spacer, Box, Heading, Text } from "@chakra-ui/react";
 
 import { AuthContext } from "./context/AuthContext";
+
+const MenuItems = ({ children }) => (
+  <Text mt={{ base: 4, md: 0 }} mr={6} display="block">
+    {children}
+  </Text>
+);
 
 const Navigation = () => {
   const { auth, isLoggedIn, logout } = useContext(AuthContext);
 
   console.log({ auth });
   return (
-    <Flex className='Navigation'>
-      <NavLink className='chakra-link' to='/'>
-        Go to Home
-      </NavLink>
-      <NavLink className='chakra-link' to='/admin'>
-        Go to Admin
-      </NavLink>
-      <Spacer />
+    <Flex
+      as="nav"
+      align="center"
+      justify="space-between"
+      wrap="wrap"
+      padding="1.5rem"
+      bg="blue.500"
+      color="white"
+    >
+      <Flex align="center" mr={5}>
+        <Heading as="h1" size="lg" letterSpacing={"-.1rem"}>
+          JigglyPuff
+        </Heading>
+      </Flex>
+      <Box
+        display={{ sm: "block", md: "flex" }}
+        width={{ sm: "full", md: "auto" }}
+        alignItems="center"
+        flexGrow={1}
+      >
+        <MenuItems>
+          <NavLink className='chakra-link' to='/'>
+            Home
+          </NavLink>
+        </MenuItems>
+        <MenuItems>
+          <NavLink className='chakra-link' to='/admin'>
+            Go to Admin
+          </NavLink>
+        </MenuItems>
+      </Box>
 
       {isLoggedIn && (
         <>
-          <div>Hello, {auth.name}</div>
-          <Button onClick={logout} colorScheme='red'>
-            Logout
-          </Button>
+          <Box
+            display={{ sm: "block", md: "flex" }}
+            width={{ sm: "full", md: "auto" }}
+            alignItems="center"
+            flexGrow={1}
+          >
+            <MenuItems>Hello, {auth.name}</MenuItems>
+            <MenuItems>
+              <Button onClick={logout} colorScheme='red'>
+                Logout
+              </Button>
+            </MenuItems>
+          </Box>
         </>
       )}
     </Flex>

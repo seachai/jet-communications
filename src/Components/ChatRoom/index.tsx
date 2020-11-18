@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { Button, Input } from "@chakra-ui/react";
+import { Button, Input, Heading, Flex, Box } from "@chakra-ui/react";
 import io from "socket.io-client";
 
 import { useInput } from "../../hooks";
@@ -31,19 +31,30 @@ const ChatRoom = () => {
   const emitMessage = () => socket.emit("send-message", { author: auth.name, message });
 
   return (
-    <div className='ChatRoom'>
-      <h1>ChatRoom</h1>
-      <MessageList messageList={messageList} />
-      <form onSubmit={handleSubmit}>
-        <Input type='text' placeholder={"Enter message"} value={message} onChange={handleChange} />
-        <Button type='submit' colorScheme='blue'>
-          Send message
-        </Button>
-      </form>
-      <Link to='/video-chat' colorScheme='blue'>
-        Transfer to Video
-      </Link>
-    </div>
+    <Flex minHeight='100vh' width='full' align='center' justifyContent='center'>
+      <Box 
+        borderWidth={1}
+        p={12}
+        maxWidth='1000px'
+        borderRadius={4}
+        textAlign='center'
+        boxShadow='lg'
+      >
+        <div className='ChatRoom'>
+          <Heading>ChatRoom</Heading>
+            <MessageList messageList={messageList} />
+            <form onSubmit={handleSubmit}>
+              <Input type='text' placeholder={"Enter message"} value={message} onChange={handleChange} />
+              <Button type='submit' colorScheme='blue'>
+                Send message
+              </Button>
+            </form>
+            <Link to='/video-chat' colorScheme='blue'>
+              Transfer to Video
+            </Link>
+        </div>
+      </Box>
+    </Flex>
   );
 };
 
