@@ -6,7 +6,8 @@ CREATE TABLE users (
     given_name TEXT,
     family_name TEXT,
     username TEXT,
-    password TEXT
+    password TEXT,
+    CONSTRAINT unique_username UNIQUE(username)
 );
 
 --UPDATE AFTER CLOSING THE SESSION:   MAKE SURE THAT "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP" CAN BE WRITTEN HERE AT CLOSING

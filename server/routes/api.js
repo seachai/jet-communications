@@ -16,10 +16,12 @@ if (process.env.NODE_ENV !== "production") {
 // create user
 router.post("/register", userController.signUp, (req, res, next) => {
   const { user } = res.locals;
+  console.log("user: ", user);
   res.status(200).json(user); // MAKE SURE THAT UNIQUE USERNAME IS TAKEN INTO ACCOUNT ON THE FRONTEND
 });
 
 router.post("/login", userController.login, (req, res, next) => {
+  console.log("res.locals.data: ", res.locals.data);
   res.status(200).json(res.locals.data);
 });
 
@@ -36,45 +38,9 @@ router.get("/", (req, res) => {
 });
 
 // VIDEO
-router.post("/video-chat", twilioController.startVideoChat);
+// router.post("/video", twilioController.createRoom);
 
-// // WHATSAPP
-
-/**
- * Generate an Access Token for a chat application user - it generates a random
- * username for the client requesting a token, and takes a device ID as a query
- * parameter.
- */
-
-router.post("/video/token", function (req, res) {
-  const { identity, room } = req.body;
-
-  const VideoGrant = AccessToken.VideoGrant;
-
-  // Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
-  const MAX_ALLOWED_SESSION_DURATION = 14400;
-
-  // Create an access token which we will sign and return to the client,
-  // containing the grant we just created.
-
-  const token = new AccessToken(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_API_KEY,
-    process.env.TWILIO_API_SECRET,
-    { ttl: MAX_ALLOWED_SESSION_DURATION }
-  );
-
-  // Assign the generated identity to the token.
-  token.identity = identity;
-
-  // Grant the access token Twilio Video capabilities.
-  const grant = new VideoGrant();
-  token.addGrant(grant);
-
-  console.log({ token });
-
-  // Serialize the token to a JWT string.
-  res.send(token.toJwt());
-});
+// GET ACCESS TOKEN FOR TWILIO VIDEO CHAT
+router.post("/video/token", twilioController.getToken);
 
 module.exports = router;

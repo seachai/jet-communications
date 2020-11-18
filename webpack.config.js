@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const Dotenv = require("dotenv-webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   mode: process.env.NODE_ENV || "production",
@@ -15,6 +16,10 @@ module.exports = {
       "/api": "http://localhost:3001",
     },
   },
+  // optimization: {
+  //   minimize: true,
+  //   minimizer: [new TerserPlugin()],
+  // },
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "bundle.js",
