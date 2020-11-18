@@ -11,7 +11,8 @@ const EntryPage = () => {
   // Else redirect the user directly to the App
   return (
     <div className='EntryPage'>
-      {isLoggedIn ? <Redirect to='/main' /> : <UserForms />}
+      <h1>EntryPage</h1>
+      {isLoggedIn ? <Redirect to='/chatroom' /> : <UserForms />}
     </div>
   );
 };

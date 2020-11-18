@@ -7,6 +7,7 @@ import Navigation from "./Navigation";
 import EntryPage from "./Components/EntryPage";
 import ChatRoom from "./Components/ChatRoom";
 import Admin from "./Components/Admin/";
+import VideoChat from "./Components/VideoChat/";
 
 
 const App = () => (
@@ -20,6 +21,9 @@ const App = () => (
       </WithAuth>
       <WithAuth path='/admin'>
         <Admin />
+      </WithAuth>
+      <WithAuth path='/video-chat'>
+        <VideoChat />
       </WithAuth>
     </Switch>
   </>

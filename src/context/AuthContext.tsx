@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
     setAuth(initialAuthState);
   };
 
-  return <Provider value={{ login, isLoggedIn, logout }}>{children}</Provider>;
+  return <Provider value={{ auth, login, isLoggedIn, logout }}>{children}</Provider>;
 };
 
 export { AuthContext, AuthProvider };
