@@ -15,25 +15,19 @@ const VideoChat = () => {
 
   useEffect(() => {
     getParticipantToken({ identity: auth.name, room: "Support Room" });
-    // createRoom();
-    createLocalTrackVideo();
   }, []);
 
   useEffect(() => {
-    if (!token) return;
-    console.log({ participants });
-    addParticipant(room);
-  }, [token]);
+    async function fn() {
+      if (!token) return;
+      console.log({ participants });
+      if (room) {
+        await addParticipant(room);
+      }
+    }
 
-  // useEffect(() => {
-  //   let active = true;
-  //   fetchStuff(id).then((stuff) => {
-  //     if (active) setStuff(stuff);
-  //   });
-  //   return () => {
-  //     active = false;
-  //   };
-  // }, [token]);
+    fn();
+  }, [token]);
 
   // Helper to get a token
   const getParticipantToken = async ({ identity, room }) => {
@@ -45,7 +39,6 @@ const VideoChat = () => {
     });
     console.log({ data });
     await createRoom(data);
-    // setToken(() =>  );
   };
 
   const createRoom = async (token) => {
@@ -56,7 +49,9 @@ const VideoChat = () => {
       logLevel: "info",
     });
     console.log({ twilioConnection });
-    setRoom(twilioConnection);
+    setRoom(() => twilioConnection);
+    // await addParticipant(twilioConnection);
+    // await createLocalTrackVideo();
   };
 
   const createLocalTrackVideo = async () => {
@@ -69,10 +64,15 @@ const VideoChat = () => {
       const localEl = localTrack.attach();
       localEl.className = "local-video";
       localVidRef.current.appendChild(localEl);
+    } else {
+      // const localEl = localTrack.attach();
+      // remoteVidRef.current.appendChild();
     }
   };
 
   const addParticipant = (room) => {
+    createLocalTrackVideo();
+    console.log("NEXT", { room });
     room.on("participantConnected", (participant) => {
       console.log(`Participant "${participant.identity}" connected`);
       setParticipants((prevParticipants) => [...prevParticipants, participant]);
@@ -80,6 +80,7 @@ const VideoChat = () => {
       participant.tracks.forEach((publication) => {
         if (publication.isSubscribed) {
           const track = publication.track;
+          console.log({ track });
           remoteVidRef.current.appendChild(track.attach());
         }
       });
