@@ -1,16 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 
 import { AuthProvider } from "./context/AuthContext";
 import { FetchProvider } from "./context/FetchContext";
-import WithAuth from "./WithAuth";
-import Navigation from "./Navigation";
 import App from "./App";
-import EntryPage from "./Components/EntryPage";
-import Admin from "./Components/Admin";
-import VideoChat from "./Components/VideoChat";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,17 +13,7 @@ ReactDOM.render(
       <FetchProvider>
         <AuthProvider>
           <Router>
-            <Navigation />
-            <Switch>
-              <Route exact path='/' component={EntryPage} />
-              <Route exact path='/main' component={App} />
-              <WithAuth path='/admin'>
-                <Admin />
-              </WithAuth>
-              <WithAuth path='/video-chat'>
-                <VideoChat />
-              </WithAuth>
-            </Switch>
+            <App />
           </Router>
         </AuthProvider>
       </FetchProvider>

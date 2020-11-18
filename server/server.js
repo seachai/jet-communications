@@ -1,9 +1,8 @@
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
-const query = require("./database/model.js");
-const queryTypes = require("./database/queryTypes.js");
 const socketIO = require("socket.io");
+const apiRouter = require("./routes/api");
 const cors = require("cors");
 const {
   jwt: { AccessToken },
@@ -18,6 +17,7 @@ if (process.env.NODE_ENV !== "production") {
 const server = express();
 const PORT = process.env.PORT || 3001;
 
+// SET UP
 server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
@@ -109,3 +109,19 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => console.log("Client disconnected"));
 });
+
+/**
+ * Admin connects
+ * User connects
+ *
+ * Admin ends chat
+ * Client -> chat data -> server
+ * Server -> write the logs into the database
+ *
+ * Conversation (
+ * timestamp
+ * recipient_id
+ * sender_id
+ * messages -> FK
+ * )
+ */

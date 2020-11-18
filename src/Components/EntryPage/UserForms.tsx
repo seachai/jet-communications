@@ -37,18 +37,19 @@ const UserForms = () => {
      * Receive a response back from express (User Data?)
      *
      */
+
     const endpoint = isRegistered
-      ? `${process.env.ENDPOINT}/login`
-      : `${process.env.ENDPOINT}/register`;
+      ? `${process.env.REACT_APP_API_URL}/login`
+      : `${process.env.REACT_APP_API_URL}/register`;
 
-    // const result = await axios.post(endpoint, values);
+    const { data, error } = await axios.post(endpoint, values);
 
-    // if (result) login(result)
+    if (error) return alert(error.message);
 
-    login({
-      name: "my name",
-      token: values.email,
-    });
+    if (data) {
+      const { name, email } = data;
+      login({ name, token: email });
+    }
   };
 
   return (
