@@ -93,7 +93,7 @@ const useTwilioVideo = () => {
   const getParticipantToken = async ({ identity, room }) => {
     const result = await axios({
       method: "POST",
-      url: `${process.env.REACT_APP_API_URL}/video/token}`,
+      url: "https://jasmine-greyhound-8600.twil.io/create-room-token",
       data: { identity, room },
     });
 
