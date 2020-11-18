@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -11,7 +11,6 @@ const EntryPage = () => {
   // Else redirect the user directly to the App
   return (
     <div className='EntryPage'>
-      <h1>EntryPage</h1>
       {isLoggedIn ? <Redirect to='/main' /> : <UserForms />}
     </div>
   );
