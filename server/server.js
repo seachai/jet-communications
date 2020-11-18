@@ -2,7 +2,6 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const socketIO = require("socket.io");
-const apiRouter = require("./routes/api");
 const cors = require("cors");
 
 // SET UP ENV VARIABLES
@@ -10,6 +9,7 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
+const apiRouter = require("./routes/api");
 // server
 const server = express();
 const PORT = process.env.PORT || 3001;
