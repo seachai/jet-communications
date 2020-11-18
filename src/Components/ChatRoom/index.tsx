@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Input} from "@chakra-ui/react";
-import io from 'socket.io-client';
+import { Button, Input } from "@chakra-ui/react";
+import io from "socket.io-client";
 
-import { useInput } from '../../hooks'
-import MessageList from './MessageList'
-import { AuthContext } from "../../AuthProvider";
+import { useInput } from "../../hooks";
+import MessageList from "./MessageList";
+import { AuthContext } from "../../context/AuthContext";
 
 const socket = io(process.env.ENDPOINT);
 
@@ -14,7 +14,7 @@ const ChatRoom = () => {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    socket.on("reply-message", (msg) => setMessageList(messageList => [...messageList, msg]));
+    socket.on("reply-message", (msg) => setMessageList((messageList) => [...messageList, msg]));
   }, []);
 
   const handleSubmit = (event) => {
@@ -22,20 +22,22 @@ const ChatRoom = () => {
 
     if (message) {
       emitMessage();
-      setMessageList([...messageList, { author: auth.name, message}])
-      setMessage('');
+      setMessageList([...messageList, { author: auth.name, message }]);
+      setMessage("");
     }
-  }
+  };
 
   const emitMessage = () => socket.emit("send-message", { author: auth.name, message });
 
   return (
     <div className='ChatRoom'>
       <h1>ChatRoom</h1>
-      <MessageList messageList={messageList}/>
+      <MessageList messageList={messageList} />
       <form onSubmit={handleSubmit}>
-        <Input type="text" placeholder={"Enter message"} value={message} onChange={handleChange} />
-        <Button type="submit" colorScheme='blue'>Send message</Button>
+        <Input type='text' placeholder={"Enter message"} value={message} onChange={handleChange} />
+        <Button type='submit' colorScheme='blue'>
+          Send message
+        </Button>
       </form>
     </div>
   );

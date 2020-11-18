@@ -3,6 +3,11 @@ const twilioController = require("../controllers/twilioController");
 const userController = require("../controllers/userController");
 const router = express.Router();
 
+// SET UP ENV VARIABLES
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 // USERS
 // create user
 router.post("/register", userController.signUp, (req, res, next) => {
@@ -27,9 +32,7 @@ router.get("/", (req, res) => {
 });
 
 // VIDEO
-// router.post("/video-chat", twilioController.startVideoChat, (req, res) => {
-//   res.status(200).json({ message: "video chat created " });
-// });
+router.post("/video-chat", twilioController.startVideoChat);
 
 // // WHATSAPP
 
