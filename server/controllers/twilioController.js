@@ -12,12 +12,12 @@ const client = require("twilio")(
 const twilioController = {};
 
 twilioController.startVideoChat = (req, res, next) => {
-  const roomName = new Date().now;
+  const roomName = Date.now();
   client.video.rooms
     .create({ uniqueName: roomName })
     .then((room) => {
       console.log("Video chat room created: ", room.sid);
-      res.status(200).json({ message: "Video chat started", room: room.sid });
+      res.status(200).json({ message: "Video chat started", room: room });
       return next();
     })
     .catch((e) => console.log({ e }));

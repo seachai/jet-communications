@@ -8,13 +8,14 @@ export default function VideoChat() {
   const { auth } = useContext(AuthContext);
   const [token, setToken] = useState(null);
   const [participants, setParticipants] = useState([]);
-  const [roomName, setRoomName] = useState(Date.now());
+  const [roomName, setRoomName] = useState("myroom");
 
   useEffect(() => {
     async function getToken() {
       const endpoint = `${process.env.REACT_APP_API_URL}/video/token`;
-      const { data } = await axios.post(endpoint, { identity: auth.name, room: roomName });
-
+      // const { data } = await axios.post(endpoint, { identity: auth.name, room: roomName });
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/video-chat`);
+      console.log(data);
       setToken(data);
     }
 
@@ -29,28 +30,6 @@ export default function VideoChat() {
     };
     const participantDisconnected = (participant) => {
       setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
-    };
-    Video.connect(token, {
-      name: roomName,
-    }).then((room) => {
-      setRoomName(room);
-      room.on("participantConnected", participantConnected);
-      room.on("participantDisconnected", participantDisconnected);
-      room.participants.forEach(participantConnected);
-    });
-
-    return () => {
-      setRoomName((currentRoom) => {
-        if (currentRoom && currentRoom.localParticipant.state === "connected") {
-          currentRoom.localParticipant.tracks.forEach(function (trackPublication) {
-            trackPublication.track.stop();
-          });
-          currentRoom.disconnect();
-          return null;
-        } else {
-          return currentRoom;
-        }
-      });
     };
   }, [roomName, token]);
 
