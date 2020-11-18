@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import { Button, Input } from "@chakra-ui/react";
 import io from "socket.io-client";
 
@@ -39,6 +40,9 @@ const ChatRoom = () => {
           Send message
         </Button>
       </form>
+      <Link to='/video-chat' colorScheme='blue'>
+        Transfer to Video
+      </Link>
     </div>
   );
 };

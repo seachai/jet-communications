@@ -7,6 +7,7 @@ import { AuthContext } from "./context/AuthContext";
 const Navigation = () => {
   const { auth, isLoggedIn, logout } = useContext(AuthContext);
 
+  console.log({ auth });
   return (
     <Flex className='Navigation'>
       <NavLink className='chakra-link' to='/'>

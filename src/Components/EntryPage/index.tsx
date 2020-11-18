@@ -12,7 +12,7 @@ const EntryPage = () => {
   return (
     <div className='EntryPage'>
       <h1>EntryPage</h1>
-      {isLoggedIn ? <Redirect to='/main' /> : <UserForms />}
+      {isLoggedIn ? <Redirect to='/chatroom' /> : <UserForms />}
     </div>
   );
 };
