@@ -6,7 +6,7 @@ import { AuthContext } from "./context/AuthContext";
 const WithAuth = ({ children, ...props }) => {
   const { isLoggedIn } = useContext(AuthContext);
 
-  return <Route {...props} render={() => (isLoggedIn ? children : <Redirect to='/' />)} />;
+  return <Route {...props} render={() => (isLoggedIn ? children : children)} />;
 };
 
 export default WithAuth;

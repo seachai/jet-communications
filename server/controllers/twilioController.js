@@ -30,16 +30,11 @@ const twilioController = {};
 // };
 
 twilioController.getToken = (req, res, next) => {
-  console.log(req.body);
-  console.log({ accountSid });
   try {
     const { identity, room } = req.body;
 
-    console.log({ AccessToken });
-
     const VideoGrant = AccessToken.VideoGrant;
 
-    console.log({ VideoGrant });
     // Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
     const MAX_ALLOWED_SESSION_DURATION = 14400;
 
@@ -57,7 +52,6 @@ twilioController.getToken = (req, res, next) => {
     const grant = new VideoGrant({
       room,
     });
-    console.log({ grant });
     token.addGrant(grant);
 
     // console.log({ token });
