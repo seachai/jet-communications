@@ -1,3 +1,10 @@
+// const INSERT_USERS = `
+//   INSERT INTO users (role, given_name, family_name, username, password)
+//   VALUES ($1, $2, $3, $4, $5)
+//   ON CONFLICT ON CONSTRAINT unique_username
+//   DO NOTHING
+// `;
+
 const INSERT_USERS = `
   INSERT INTO users (role, given_name, family_name, username, password)
   VALUES ($1, $2, $3, $4, $5)
