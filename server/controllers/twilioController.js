@@ -61,7 +61,7 @@ twilioController.getToken = (req, res, next) => {
     });
 
     // Assign the generated identity to the token.
-    token.identity = identity;
+    token.identity = Date.now();
 
     // Grant the access token Twilio Video capabilities.
     const grant = new VideoGrant({
@@ -72,8 +72,8 @@ twilioController.getToken = (req, res, next) => {
     console.log(token.toJwt());
 
     // Serialize the token to a JWT string.
-    // res.send(token.toJwt());
-    res.send(accessToken);
+    res.send(token.toJwt());
+    // res.send(accessToken);
   } catch (e) {
     return next({
       log: `Error caught in userController.authenticateUser. \n Error Message: ${e.errmsg || e}`,
