@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Button,
@@ -8,7 +8,8 @@ import {
   Box,
   FormControl,
 } from "@chakra-ui/react";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, Icon } from "@chakra-ui/icons";
+import { FaVideo } from "react-icons/fa";
 import io from "socket.io-client";
 
 import { useInput } from "../../hooks";
@@ -21,14 +22,16 @@ const ChatRoom = () => {
   const [message, setMessage, handleChange] = useInput();
   const [messageList, setMessageList] = useState([]);
   const { auth } = useContext(AuthContext);
-  const ref = useRef();
 
   useEffect(() => {
     socket.on("reply-message", (msg) => {
       setMessageList((messageList) => [...messageList, msg]);
-      scrollToBottom();
     });
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -37,24 +40,22 @@ const ChatRoom = () => {
       emitMessage();
       setMessageList(() => [...messageList, { author: auth.name, message }]);
       setMessage("");
-      scrollToBottom();
     }
   };
 
   const scrollToBottom = () => {
-    // const chat = document.querySelector("#chat-list");
-    // chat.scrollTop = chat.scrollHeight;
-    ref.current.scrollTop = ref.current.scrollHeight;
+    const chat = document.querySelector("#chat-list");
+    chat.scrollTop = chat.scrollHeight;
   };
 
   const emitMessage = () =>
     socket.emit("send-message", { author: auth.name, message });
 
   return (
-    <Flex height='300px' justifyContent='center'>
-      <Box borderWidth={1} p={12} boxShadow='lg'>
-        <Heading mb={4}>Chat</Heading>
-        <MessageList messageList={messageList} ref={ref} />
+    <Flex height='800px' justifyContent='center'>
+      <Box borderWidth={1} p={12} pb={4} boxShadow='lg'>
+        <Heading>Chat</Heading>
+        <MessageList messageList={messageList} />
         <FormControl width='800px'>
           <form onSubmit={handleSubmit} style={{ display: "flex" }}>
             <Input
@@ -74,7 +75,13 @@ const ChatRoom = () => {
             </Button>
           </form>
         </FormControl>
-        <Link to='/video-chat'>Transfer to Video</Link>
+        <Button
+          mt={4}
+          colorScheme='blue'
+          rightIcon={<Icon as={FaVideo} w={4} h={4} />}
+        >
+          <Link to='/video-chat'>Transfer to Video</Link>
+        </Button>
       </Box>
     </Flex>
   );

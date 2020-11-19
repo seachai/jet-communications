@@ -7,7 +7,7 @@ const Message = ({ message, matched }) => (
     bgImage={
       matched
         ? "linear-gradient(45deg, #40E0D0, #00BFFF)"
-        : "linear-gradient(#FFF, #FFF)"
+        : "linear-gradient(45deg, #FEFEFE, #FEFEFE)"
     }
     color={matched ? "white" : "black"}
     boxShadow='md'
