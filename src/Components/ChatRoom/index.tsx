@@ -22,6 +22,9 @@ const ChatRoom = () => {
     socket.on("reply-message", (msg) => {
       setMessageList((messageList) => [...messageList, msg]);
     });
+    socket.on("reply-message", (msg) => {
+      setMessageList((messageList) => [...messageList, msg]);
+    });
   }, []);
 
   useEffect(() => {
@@ -75,9 +78,7 @@ const ChatRoom = () => {
           mt={4}
           colorScheme='blue'
           rightIcon={<Icon as={FaSms} w={4} h={4} />}
-          onClick={() => {
-            onOpen()
-          }}
+          onClick={onOpen}
         >
           SMS
         </Button>
