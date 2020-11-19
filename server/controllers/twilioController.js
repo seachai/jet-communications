@@ -1,5 +1,6 @@
 const AccessToken = require("twilio").jwt.AccessToken;
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const accessToken = process.env.TWILIO_ACCESS_TOKEN;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const apiKey = process.env.TWILIO_API_KEY;
 const apiSecret = process.env.TWILIO_API_SECRET;
@@ -54,11 +55,11 @@ twilioController.getToken = (req, res, next) => {
     });
     token.addGrant(grant);
 
-    console.log({ token });
-    console.log(typeof token);
+    console.log(token.toJwt());
 
     // Serialize the token to a JWT string.
     res.send(token.toJwt());
+    // res.send(accessToken);
   } catch (e) {
     return next({
       log: `Error caught in userController.authenticateUser. \n Error Message: ${e.errmsg || e}`,

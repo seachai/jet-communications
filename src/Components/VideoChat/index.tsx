@@ -13,85 +13,97 @@ const VideoChat = () => {
   const localVidRef = useRef();
   const remoteVidRef = useRef();
 
+  // Get a token on the initial render
   useEffect(() => {
     getParticipantToken({ identity: auth.name, room: "Support Room" });
   }, []);
 
   useEffect(() => {
-    async function fn() {
-      if (!token) return;
-      console.log({ participants });
-      if (room) {
-        await addParticipant(room);
-      }
-    }
+    window.Twilio.Video.connect(token, { video: true, audio: true, name: "Support Room" }).then(
+      (room) => {
+        // Attach the local video
+        window.Twilio.Video.createLocalVideoTrack().then((track) => {
+          localVidRef.current.appendChild(track.attach());
+        });
 
-    fn();
+        const addParticipant = (participant) => {
+          console.log("new participant!");
+          console.log(participant);
+          participant.tracks.forEach((publication) => {
+            if (publication.isSubscribed) {
+              const track = publication.track;
+
+              remoteVidRef.current.appendChild(track.attach());
+              console.log("attached to remote video");
+            }
+          });
+
+          participant.on("trackSubscribed", (track) => {
+            console.log("track subscribed");
+            remoteVidRef.current.appendChild(track.attach());
+          });
+        };
+
+        room.participants.forEach(addParticipant);
+        room.on("participantConnected", addParticipant);
+      }
+    );
   }, [token]);
 
   // Helper to get a token
   const getParticipantToken = async ({ identity, room }) => {
-    console.log("participant token");
     const { data } = await axios({
       method: "POST",
       url: `${process.env.REACT_APP_API_URL}/video/token`,
       data: { identity, room },
     });
+    setToken(data);
     console.log({ data });
-    await createRoom(data);
+    // await createRoom(data);
   };
 
-  const createRoom = async (token) => {
-    const twilioConnection = await window.Twilio.Video.connect(token, {
-      name: "Support Room",
-      audio: true,
-      video: { width: 640 },
-      logLevel: "info",
-    });
-    console.log({ twilioConnection });
-    setRoom(() => twilioConnection);
-    // await addParticipant(twilioConnection);
-    // await createLocalTrackVideo();
-  };
+  // const createRoom = async (token) => {
+  //   const twilioConnection = await window.Twilio.Video.connect(token, {
+  //     name: "Support Room",
+  //     audio: true,
+  //     video: { width: 640 },
+  //     logLevel: "info",
+  //   });
+  //   console.log({ twilioConnection });
+  //   setRoom(() => twilioConnection);
 
-  const createLocalTrackVideo = async () => {
-    const localTrack = await window.Twilio.Video.createLocalVideoTrack().catch((error) => {
-      console.error(`Unable to create local tracks: ${error.message}`);
-    });
+  //   twilioConnection.on("participantConnected", (participant) => {
+  //     console.log(`Participant "${participant.identity}" connected`);
+  //     setParticipants((prevParticipants) => [...prevParticipants, participant]);
+  //     participant.tracks.forEach((publication) => {
+  //       if (publication.isSubscribed) {
+  //         const track = publication.track;
+  //         console.log({ track });
+  //         remoteVidRef.current.appendChild(track.attach());
+  //       }
+  //     });
 
-    // Attach the local video if it’s not already visible.
-    if (!localVidRef.current.hasChildNodes()) {
-      const localEl = localTrack.attach();
-      localEl.className = "local-video";
-      localVidRef.current.appendChild(localEl);
-    } else {
-      // const localEl = localTrack.attach();
-      // remoteVidRef.current.appendChild();
-    }
-  };
+  //     participant.on("trackSubscribed", (track) => {
+  //       remoteVidRef.current.appendChild(track.attach());
+  //     });
 
-  const addParticipant = (room) => {
-    createLocalTrackVideo();
-    console.log("NEXT", { room });
-    room.on("participantConnected", (participant) => {
-      console.log(`Participant "${participant.identity}" connected`);
-      setParticipants((prevParticipants) => [...prevParticipants, participant]);
+  //     twilioConnection.participants.forEach(addParticipant);
+  //   });
+  //   await createLocalTrackVideo();
+  // };
 
-      participant.tracks.forEach((publication) => {
-        if (publication.isSubscribed) {
-          const track = publication.track;
-          console.log({ track });
-          remoteVidRef.current.appendChild(track.attach());
-        }
-      });
+  // const createLocalTrackVideo = async () => {
+  //   const localTrack = await window.Twilio.Video.createLocalVideoTrack().catch((error) => {
+  //     console.error(`Unable to create local tracks: ${error.message}`);
+  //   });
 
-      participant.on("trackSubscribed", (track) => {
-        remoteVidRef.current.appendChild(track.attach());
-      });
-
-      room.participants.forEach(addParticipant);
-    });
-  };
+  //   // Attach the local video if it’s not already visible.
+  //   if (!localVidRef.current.hasChildNodes()) {
+  //     const localEl = localTrack.attach();
+  //     localEl.className = "local-video";
+  //     localVidRef.current.appendChild(localEl);
+  //   }
+  // };
 
   return (
     <>

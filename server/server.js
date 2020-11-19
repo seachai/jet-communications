@@ -57,7 +57,7 @@ const serverPort = server.listen(PORT);
 
 const io = socketIO(serverPort, {
   cors: true,
-  origins: ["http://127.0.0.1:8080", "https://f7fb87b6cb5b.ngrok.io/"],
+  origins: ["http://127.0.0.1:8080"],
 });
 
 io.on("connection", (socket) => {
