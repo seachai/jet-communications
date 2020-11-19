@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Button,
+  FormControl,
+  Input,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -9,28 +12,43 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-// POST /api/sms/${number}
-const SMS = ({ isOpen, onOpen, onClose }) => {
+// POST /api/sms/1${number}
+const SMS = ({ isOpen, onClose }) => {
+  const [mobileNumber, setMobileNumber] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/sms`, null, {
+      params: { phone: mobileNumber },
+    });
+  };
   return (
-    <>
-      <Button onClick={onOpen}>Open Modal</Button>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Please enter your mobile number</ModalHeader>
+        <ModalCloseButton autoFocus={false} />
+        <ModalBody>
+          <form>
+            <FormControl>
+              <Input
+                type='number'
+                placeholder={"Mobile Number"}
+                autoFocus={true}
+                value={mobileNumber}
+                onChange={(e) => setMobileNumber(e.target.value)}
+              />
+            </FormControl>
+          </form>
+        </ModalBody>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>{/* <Lorem count={2} /> */}</ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant='ghost'>Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+        <ModalFooter>
+          <Button colorScheme='blue' mr={3} onClick={handleSubmit}>
+            Connect
+          </Button>
+          {/* <Button variant="ghost" onClick={onClose}>Close</Button> */}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

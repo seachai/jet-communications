@@ -75,14 +75,14 @@ const ChatRoom = () => {
           mt={4}
           colorScheme='blue'
           rightIcon={<Icon as={FaSms} w={4} h={4} />}
-          // onOpen={() => {
-          //   console.log(isOpen);
-          // }}
+          onClick={() => {
+            onOpen()
+          }}
         >
           SMS
         </Button>
         {
-          // isOpen ? <SMS isOpen={isOpen} onClose={onClose} />
+          isOpen ? <SMS isOpen={isOpen} onClose={onClose} /> : ""
         }
       </Box>
     </Flex>
