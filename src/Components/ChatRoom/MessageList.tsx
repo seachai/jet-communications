@@ -1,18 +1,31 @@
-import React, { useContext } from "react";
-import { Flex, Box } from "@chakra-ui/react";
+import React, { useContext, forwardRef } from "react";
+import { Flex } from "@chakra-ui/react";
 import { AuthContext } from "../../context/AuthContext";
 import Message from "./Message";
 
-const MessageList = ({ messageList }) => {
+const MessageList = forwardRef(({ messageList }, ref) => {
   const { auth } = useContext(AuthContext);
 
   return (
-    <ul style={{ listStyle: "none" }}>
+    <Flex
+      height='100px'
+      direction='column'
+      style={{ listStyle: "none" }}
+      overflowY='scroll'
+      id='chat-list'
+      ref={ref}
+    >
       {messageList.map((message) => (
-        <Message key={Math.random()} name={message.author} message={message.message} />
+        <Message
+          key={Math.random()}
+          author={message.author}
+          message={message.message}
+          username={auth.name}
+          matched={auth.name === message.author}
+        />
       ))}
-    </ul>
+    </Flex>
   );
-};
+});
 
 export default MessageList;
