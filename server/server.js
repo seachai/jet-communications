@@ -67,8 +67,19 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("reply-message", data);
   });
 
+  socket.on("send-sms", (data) => {
+    // pass the data to middleware
+
+    // save the result in a variable
+
+    // pass the result using broadcast
+    socket.broadcast.emit("reply-sms", data);
+  });
+
   socket.on("disconnect", () => console.log("Client disconnected"));
 });
+
+module.exports = io;
 
 /**
  * Admin connects

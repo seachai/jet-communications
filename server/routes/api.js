@@ -1,4 +1,5 @@
 const express = require("express");
+const io = require("../server");
 const {
   jwt: { AccessToken },
 } = require("twilio");
@@ -37,9 +38,6 @@ router.get("/", (req, res) => {
   res.status(200).json({ message: "/api route ping" });
 });
 
-// VIDEO
-// router.post("/video", twilioController.createRoom);
-
 // GET ACCESS TOKEN FOR TWILIO VIDEO CHAT
 router.post("/video/token", twilioController.getToken);
 
@@ -51,7 +49,9 @@ router.post("/video/callback", (req, res) => {
 router.post("/sms", twilioController.sendText);
 
 router.post("/sms/callback", (req, res) => {
-  console.log(req.body);
+  console.log(io);
+  // console.log(req.body);
+
   res.end();
 });
 

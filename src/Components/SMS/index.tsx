@@ -17,7 +17,7 @@ const SMS = ({ isOpen, onClose }) => {
   const [mobileNumber, setMobileNumber] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post(`${process.env.REACT_APP_API_URL}/api/sms`, null, {
+    await axios.post(`${process.env.REACT_APP_API_URL}/sms`, null, {
       params: { phone: mobileNumber },
     });
   };
