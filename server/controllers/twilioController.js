@@ -82,4 +82,14 @@ twilioController.getToken = (req, res, next) => {
   }
 };
 
+twilioController.completeRoom = (req, res, next) => {
+  const { room } = req.body;
+  console.log(req.body);
+  client.video
+    .rooms(room)
+    .update({ status: "completed" })
+    .then((room) => console.log(room.uniqueName));
+  res.status(200).json({ message: "Completed room" });
+};
+
 module.exports = twilioController;

@@ -28,7 +28,7 @@ const ChatRoom = () => {
   const [message, setMessage, handleChange] = useInput();
   const [messageList, setMessageList] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isVideoOpen, onVideoOpen, onVideoClose } = useDisclosure();
+  const { isOpen: isVideoOpen, onOpen: onVideoOpen, onClose: onVideoClose } = useDisclosure();
 
   useEffect(() => {
     socket.on("receive-chat", (msg) => {
@@ -81,6 +81,7 @@ const ChatRoom = () => {
       case "webchat":
         socket.emit("send-chat", { author: auth.name, message });
         break;
+      case "video":
     }
   };
 

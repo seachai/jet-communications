@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import {
+  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -10,56 +11,31 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import io from "socket.io-client";
 
 import { AuthContext } from "../../context/AuthContext";
-import { leaveRoom } from "../../hooks/useTwilioVideo";
+
+const socket = io(process.env.PORT || process.env.ENDPOINT);
 
 const VideoChat = ({ isOpen, onClose, storeMode }) => {
   const { auth } = useContext(AuthContext);
   const [room, setRoom] = useState(null);
   const [token, setToken] = useState(null);
-  const [participants, setParticipants] = useState([]);
-  const localVidRef = useRef();
-  const remoteVidRef = useRef();
 
   // Get a token on the initial render
   useEffect(() => {
-    getParticipantToken({ identity: auth.name, room: "Support Room" });
+    getParticipantToken({ identity: Date.now(), room: "Support Room" });
+    socket.on("receive-chat", (msg) => {
+      setMessageList((messageList) => [...messageList, msg]);
+    });
+
+    socket.on("receive-sms", (sms) => {
+      setMessageList((messageList) => [...messageList, sms]);
+      console.log({ sms });
+    });
   }, []);
 
-  useEffect(() => {
-    window.Twilio.Video.connect(token, { video: true, audio: true, name: "Support Room" }).then(
-      (room) => {
-        // Attach the local video
-        window.Twilio.Video.createLocalVideoTrack().then((track) => {
-          localVidRef.current.appendChild(track.attach());
-        });
-
-        const addParticipant = (participant) => {
-          console.log("new participant!");
-          console.log(participant);
-          participant.tracks.forEach((publication) => {
-            if (publication.isSubscribed) {
-              const track = publication.track;
-
-              remoteVidRef.current.appendChild(track.attach());
-              console.log("attached to remote video");
-            }
-          });
-
-          participant.on("trackSubscribed", (track) => {
-            console.log("track subscribed");
-            remoteVidRef.current.appendChild(track.attach());
-          });
-        };
-
-        room.participants.forEach(addParticipant);
-        room.on("participantConnected", addParticipant);
-      }
-    );
-  }, [token]);
-
-  // Helper to get a token
+  // Helper to get a unique token for each user
   const getParticipantToken = async ({ identity, room }) => {
     const { data } = await axios({
       method: "POST",
@@ -68,71 +44,72 @@ const VideoChat = ({ isOpen, onClose, storeMode }) => {
     });
     setToken(data);
     console.log({ data });
-    // await createRoom(data);
   };
 
-  // const createRoom = async (token) => {
-  //   const twilioConnection = await window.Twilio.Video.connect(token, {
-  //     name: "Support Room",
-  //     audio: true,
-  //     video: { width: 640 },
-  //     logLevel: "info",
-  //   });
-  //   console.log({ twilioConnection });
-  //   setRoom(() => twilioConnection);
+  const VideoChat = ({ token, setRoom }) => {
+    const localVidRef = useRef();
+    const remoteVidRef = useRef();
 
-  //   twilioConnection.on("participantConnected", (participant) => {
-  //     console.log(`Participant "${participant.identity}" connected`);
-  //     setParticipants((prevParticipants) => [...prevParticipants, participant]);
-  //     participant.tracks.forEach((publication) => {
-  //       if (publication.isSubscribed) {
-  //         const track = publication.track;
-  //         console.log({ track });
-  //         remoteVidRef.current.appendChild(track.attach());
-  //       }
-  //     });
+    useEffect(() => {
+      window.Twilio.Video.connect(token, { video: true, audio: true, name: "Support Room" }).then(
+        (room) => {
+          // Attach the local video
+          setRoom(room);
+          console.log({ room });
+          window.Twilio.Video.createLocalVideoTrack().then((track) => {
+            localVidRef.current.appendChild(track.attach());
+          });
 
-  //     participant.on("trackSubscribed", (track) => {
-  //       remoteVidRef.current.appendChild(track.attach());
-  //     });
+          const addParticipant = (participant) => {
+            console.log("new participant!");
+            console.log(participant);
+            participant.tracks.forEach((publication) => {
+              if (publication.isSubscribed) {
+                const track = publication.track;
 
-  //     twilioConnection.participants.forEach(addParticipant);
-  //   });
-  //   await createLocalTrackVideo();
-  // };
+                remoteVidRef.current.appendChild(track.attach());
+                console.log("attached to remote video");
+              }
+            });
 
-  // const createLocalTrackVideo = async () => {
-  //   const localTrack = await window.Twilio.Video.createLocalVideoTrack().catch((error) => {
-  //     console.error(`Unable to create local tracks: ${error.message}`);
-  //   });
+            participant.on("trackSubscribed", (track) => {
+              console.log("track subscribed");
+              remoteVidRef.current.appendChild(track.attach());
+            });
+          };
 
-  //   // Attach the local video if it’s not already visible.
-  //   if (!localVidRef.current.hasChildNodes()) {
-  //     const localEl = localTrack.attach();
-  //     localEl.className = "local-video";
-  //     localVidRef.current.appendChild(localEl);
-  //   }
-  // };
+          room.participants.forEach(addParticipant);
+          room.on("participantConnected", addParticipant);
+        }
+      );
+    }, [token]);
+
+    return (
+      <Flex>
+        <div ref={localVidRef} />
+        <div ref={remoteVidRef} />
+      </Flex>
+    );
+  };
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          onClose();
+          // Close the room
+          axios.post("http://localhost:3001/api/video/complete", {
+            room: room.sid,
+          });
+        }}
+      >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Please enter your mobile number</ModalHeader>
-          <ModalCloseButton autoFocus={false} />
+          <ModalHeader>Video Chat</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
-            <div>
-              <p>Username: {auth.name}</p>
-              <p>Room name:</p>
-              <p>Token: {token}</p>
-            </div>
-            <hr />
-            <div className='local-participant'></div>
-            <h3>Remote Participants</h3>
-            <div className='remote-participants'>{participants}</div>
-            <div ref={localVidRef} />
-            <div ref={remoteVidRef} />
+            <VideoChat token={token} setRoom={setRoom} />
           </ModalBody>
           <ModalFooter></ModalFooter>
         </ModalContent>

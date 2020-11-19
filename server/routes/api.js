@@ -45,6 +45,8 @@ router.post("/video/callback", (req, res) => {
   return res.end();
 });
 
+router.post("/video/complete", twilioController.completeRoom);
+
 // router.post("/sms/verify-number", twilioController.verifyNumber);
 
 router.post("/sms", twilioController.sendText);
