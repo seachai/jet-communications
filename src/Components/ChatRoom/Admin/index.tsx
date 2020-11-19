@@ -20,7 +20,7 @@ import MessageList from "../MessageList";
 import SMS from "../../SMS";
 import { AuthContext } from "../../../context/AuthContext";
 
-const socket = io(process.env.ENDPOINT);
+const socket = io(process.env.PORT || process.env.ENDPOINT);
 
 const AdminChatRoom = () => {
   const { auth, mode, storeMode } = useContext(AuthContext);
