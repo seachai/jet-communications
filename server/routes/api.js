@@ -41,9 +41,11 @@ router.get("/", (req, res) => {
 router.post("/video/token", twilioController.getToken);
 
 router.post("/video/callback", (req, res) => {
-  cosnole.log({ req });
+  console.log({ req });
   return res.end();
 });
+
+// router.post("/sms/verify-number", twilioController.verifyNumber);
 
 router.post("/sms", twilioController.sendText);
 

@@ -6,9 +6,8 @@ import WithAuth from "./WithAuth";
 import Navigation from "./Navigation";
 import EntryPage from "./Components/EntryPage";
 import ChatRoom from "./Components/ChatRoom";
-import Admin from "./Components/Admin/";
+import Admin from "./Components/ChatRoom/Admin";
 import VideoChat from "./Components/VideoChat/";
-
 
 const App = () => (
   <>
@@ -16,9 +15,7 @@ const App = () => (
     <Navigation />
     <Switch>
       <Route exact path='/' component={EntryPage} />
-      <WithAuth path='/chatroom'>
-        <ChatRoom />
-      </WithAuth>
+      <Route path='/chatroom' component={ChatRoom} />
       <WithAuth path='/admin'>
         <Admin />
       </WithAuth>

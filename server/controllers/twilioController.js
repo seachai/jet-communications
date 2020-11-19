@@ -10,13 +10,33 @@ const client = require("twilio")(accountSid, authToken);
 
 const twilioController = {};
 
-twilioController.sendText = (req, res, next) => {
+twilioController.verifyNumber = (req, res, next) => {
   const { phone } = req.query;
+  res.locals.phone = phone;
   try {
     client.messages
-      .create({ from: phoneNumber, body: "heylooo", to: phone })
+      .create({
+        from: phoneNumber,
+        body: "Reply to this text to resume your conversation.",
+        to: phone,
+      })
       .then((message) => console.log(message.sid));
-    res.status(200).json({ message: "SMS sent!" });
+    next();
+  } catch (e) {
+    return next({
+      log: `Error caught in twilioController.sendText. \n Error Message: ${e.errmsg || e}`,
+      message: { err: e.errmsg || e },
+    });
+  }
+};
+
+twilioController.sendText = (req, res, next) => {
+  const { phone, message } = req.body.data;
+  try {
+    client.messages
+      .create({ from: phoneNumber, body: message, to: phone })
+      .then((message) => console.log(message.sid));
+    res.status(200).json({ sid: message.sid });
   } catch (e) {
     return next({
       log: `Error caught in twilioController.sendText. \n Error Message: ${e.errmsg || e}`,
@@ -53,7 +73,7 @@ twilioController.getToken = (req, res, next) => {
 
     // Serialize the token to a JWT string.
     // res.send(token.toJwt());
-    // res.send(accessToken);
+    res.send(accessToken);
   } catch (e) {
     return next({
       log: `Error caught in userController.authenticateUser. \n Error Message: ${e.errmsg || e}`,

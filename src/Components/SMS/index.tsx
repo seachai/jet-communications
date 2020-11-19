@@ -12,13 +12,16 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-const SMS = ({ isOpen, onClose }) => {
+const SMS = ({ isOpen, onClose, storeMode }) => {
   const [mobileNumber, setMobileNumber] = useState("");
   const handleSubmit = async () => {
-    localStorage.setItem("number", `1${mobileNumber}`);
-    axios.post(`${process.env.REACT_APP_API_URL}/sms`, null, {
+    const { data } = await axios.post(`http://localhost:3001/sms/verify-number`, null, {
       params: { phone: `1${mobileNumber}` },
     });
+    if (data.message) {
+      localStorage.setItem("number", `1${mobileNumber}`);
+    }
+    storeMode("sms");
     onClose();
   };
   return (
