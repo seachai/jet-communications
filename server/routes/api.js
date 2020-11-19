@@ -1,5 +1,4 @@
 const express = require("express");
-const io = require("../server");
 const {
   jwt: { AccessToken },
 } = require("twilio");
@@ -42,17 +41,10 @@ router.get("/", (req, res) => {
 router.post("/video/token", twilioController.getToken);
 
 router.post("/video/callback", (req, res) => {
-  console.log({ req });
+  cosnole.log({ req });
   return res.end();
 });
 
 router.post("/sms", twilioController.sendText);
-
-router.post("/sms/callback", (req, res) => {
-  console.log(io);
-  // console.log(req.body);
-
-  res.end();
-});
 
 module.exports = router;

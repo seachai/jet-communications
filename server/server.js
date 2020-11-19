@@ -22,13 +22,37 @@ server.use(bodyParser.urlencoded({ extended: true }));
 // SEND API CALLS TO API ROUTER
 server.use("/api", apiRouter);
 
-// REGULAR ROUTES
+// START THE SERVER
+const serverPort = server.listen(PORT);
+
+// SET UP SOCKETS
+const io = socketIO(serverPort, {
+  cors: true,
+  origins: ["http://127.0.0.1:8080"],
+});
+
+io.on("connection", (socket) => {
+  console.log("New client connected");
+
+  socket.on("send-message", (data) => {
+    socket.broadcast.emit("reply-message", data);
+  });
+
+  socket.on("disconnect", () => console.log("Client disconnected"));
+});
+
 server.get("/", (req, res) => {
   res.status(200).json({ message: "hello" });
 });
 
 server.get("/welcome", (req, res) => {
   res.status(200).json({ message: "Successfully authenticated" });
+});
+
+server.post("/sms/callback", (req, res) => {
+  console.log("twilio cb");
+  io.on;
+  io.emit("receive-sms", req.body);
 });
 
 // ERROR HANDLER
@@ -52,47 +76,3 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "./index.html"));
   });
 }
-
-const serverPort = server.listen(PORT);
-
-const io = socketIO(serverPort, {
-  cors: true,
-  origins: ["http://127.0.0.1:8080"],
-});
-
-io.on("connection", (socket) => {
-  console.log("New client connected");
-
-  socket.on("send-message", (data) => {
-    socket.broadcast.emit("reply-message", data);
-  });
-
-  socket.on("send-sms", (data) => {
-    // pass the data to middleware
-
-    // save the result in a variable
-
-    // pass the result using broadcast
-    socket.broadcast.emit("reply-sms", data);
-  });
-
-  socket.on("disconnect", () => console.log("Client disconnected"));
-});
-
-module.exports.io = io;
-
-/**
- * Admin connects
- * User connects
- *
- * Admin ends chat
- * Client -> chat data -> server
- * Server -> write the logs into the database
- *
- * Conversation (
- * timestamp
- * recipient_id
- * sender_id
- * messages -> FK
- * )
- */

@@ -22,8 +22,9 @@ const ChatRoom = () => {
     socket.on("reply-message", (msg) => {
       setMessageList((messageList) => [...messageList, msg]);
     });
-    socket.on("reply-message", (msg) => {
-      setMessageList((messageList) => [...messageList, msg]);
+
+    socket.on("receive-sms", (sms) => {
+      console.log({ sms });
     });
   }, []);
 
@@ -46,7 +47,7 @@ const ChatRoom = () => {
     chat.scrollTop = chat.scrollHeight;
   };
 
-  const emitMessage = () => socket.emit("send-message", { author: auth.name, message });
+  const emitMessage = () => socket.emit("send-sms", { author: auth.name, message });
   return (
     <Flex height='800px' justifyContent='center'>
       <Box borderWidth={1} p={12} pb={4} boxShadow='lg'>
@@ -82,9 +83,7 @@ const ChatRoom = () => {
         >
           SMS
         </Button>
-        {
-          isOpen ? <SMS isOpen={isOpen} onClose={onClose} /> : ""
-        }
+        {isOpen ? <SMS isOpen={isOpen} onClose={onClose} /> : ""}
       </Box>
     </Flex>
   );
