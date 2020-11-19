@@ -1,11 +1,20 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 
 import { AuthContext } from "../../context/AuthContext";
 import { leaveRoom } from "../../hooks/useTwilioVideo";
 
-const VideoChat = () => {
+const VideoChat = ({ isOpen, onClose, storeMode }) => {
   const { auth } = useContext(AuthContext);
   const [room, setRoom] = useState(null);
   const [token, setToken] = useState(null);
@@ -107,17 +116,27 @@ const VideoChat = () => {
 
   return (
     <>
-      <div>
-        <p>Username: {auth.name}</p>
-        <p>Room name:</p>
-        <p>Token: {token}</p>
-      </div>
-      <hr />
-      <div className='local-participant'></div>
-      <h3>Remote Participants</h3>
-      <div className='remote-participants'>{participants}</div>
-      <div ref={localVidRef} />
-      <div ref={remoteVidRef} />
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Please enter your mobile number</ModalHeader>
+          <ModalCloseButton autoFocus={false} />
+          <ModalBody>
+            <div>
+              <p>Username: {auth.name}</p>
+              <p>Room name:</p>
+              <p>Token: {token}</p>
+            </div>
+            <hr />
+            <div className='local-participant'></div>
+            <h3>Remote Participants</h3>
+            <div className='remote-participants'>{participants}</div>
+            <div ref={localVidRef} />
+            <div ref={remoteVidRef} />
+          </ModalBody>
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

@@ -43,7 +43,6 @@ const SMS = ({ isOpen, onClose, storeMode }) => {
             </FormControl>
           </form>
         </ModalBody>
-
         <ModalFooter>
           <Button colorScheme='blue' mr={3} onClick={handleSubmit}>
             Connect

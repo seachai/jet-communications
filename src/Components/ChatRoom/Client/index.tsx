@@ -18,6 +18,7 @@ import io from "socket.io-client";
 import { useInput } from "../../../hooks";
 import MessageList from "../MessageList";
 import SMS from "../../SMS";
+import VideoChat from "../../VideoChat";
 import { AuthContext } from "../../../context/AuthContext";
 
 const socket = io(process.env.PORT || process.env.ENDPOINT);
@@ -27,6 +28,7 @@ const ChatRoom = () => {
   const [message, setMessage, handleChange] = useInput();
   const [messageList, setMessageList] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isVideoOpen, onVideoOpen, onVideoClose } = useDisclosure();
 
   useEffect(() => {
     socket.on("receive-chat", (msg) => {
@@ -116,9 +118,20 @@ const ChatRoom = () => {
             </FormControl>
           </>
         )}
-        <Button mt={4} colorScheme='green' rightIcon={<Icon as={FaVideo} w={4} h={4} />}>
-          <Link to='/video-chat'>Video</Link>
+        <Button
+          onClick={onVideoOpen}
+          mt={4}
+          colorScheme='green'
+          rightIcon={<Icon as={FaVideo} w={4} h={4} />}
+        >
+          {/* <Link to='/video-chat'>Video</Link> */}
+          Video
         </Button>
+        {isVideoOpen ? (
+          <VideoChat isOpen={isVideoOpen} onClose={onVideoClose} storeMode={storeMode} />
+        ) : (
+          ""
+        )}
         <Button
           mt={4}
           colorScheme='blue'

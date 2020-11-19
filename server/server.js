@@ -40,6 +40,10 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("receive-chat", data);
   });
 
+  socket.on("send-video", (data) => {
+    socket.broadcast.emit("receive-video", data);
+  });
+
   socket.on("disconnect", () => console.log("Client disconnected"));
 });
 

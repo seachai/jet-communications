@@ -27,6 +27,7 @@ const AdminChatRoom = () => {
   const [message, setMessage, handleChange] = useInput();
   const [messageList, setMessageList] = useState([]);
   const [phone, setPhone] = useState("");
+  const [room, setRoom] = useState("");
 
   useEffect(() => {
     socket.on("receive-chat", (msg) => {
@@ -41,6 +42,11 @@ const AdminChatRoom = () => {
     socket.on("change-mode", ({ mode, phone }) => {
       storeMode(mode);
       setPhone(phone);
+    });
+
+    socket.on("receive-video", (data) => {
+      storeMode("video");
+      setRoom(data.room);
     });
   }, []);
 
@@ -66,7 +72,7 @@ const AdminChatRoom = () => {
   // KEEP THIS
   const sendSMS = () => {
     let mobileNumber = localStorage.getItem("number");
-    axios.post(`http://localhost:3001/api/sms`, {
+    axios.post(`${process.env.REACT_APP_API_URL}/sms`, {
       data: {
         message,
         phone,

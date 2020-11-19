@@ -1,6 +1,9 @@
 {
   "name": "jiggly",
   "version": "0.1.0",
+  "engine": {
+    "node": "15.2.0"
+  },
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.12.5",
