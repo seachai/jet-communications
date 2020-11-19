@@ -14,20 +14,11 @@ import {
 } from "@chakra-ui/react";
 const SMS = ({ isOpen, onClose }) => {
   const [mobileNumber, setMobileNumber] = useState("");
-<<<<<<< HEAD
   const handleSubmit = async () => {
     axios.post(`${process.env.REACT_APP_API_URL}/sms`,
       null, { params: { phone: `${1}mobileNumber` } }
     )
   }
-=======
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios.post(`${process.env.REACT_APP_API_URL}/api/sms`, null, {
-      params: { phone: mobileNumber },
-    });
-  };
->>>>>>> 29c604321b5432970f0e101bf1a6e91a70ffe93b
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
