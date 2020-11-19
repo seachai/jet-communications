@@ -4,32 +4,26 @@ const accessToken = process.env.TWILIO_ACCESS_TOKEN;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const apiKey = process.env.TWILIO_API_KEY;
 const apiSecret = process.env.TWILIO_API_SECRET;
+const phoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
-// const client = require("twilio")(
-//   "ACb062bc2266d0681bed2af3c4c68450bd",
-//   "ab660c50f671307086a8d55f9d2a3d52"
-// );
+const client = require("twilio")(accountSid, authToken);
 
 const twilioController = {};
 
-// twilioController.createRoom = (req, res, next) => {
-//   const roomName = Date.now();
-//   client.video.rooms
-//     .create({ uniqueName: roomName })
-//     .then((room) => {
-//       console.log("Video chat room created: ", room.sid);
-//       return res.status(200).json({ message: "Video chat started", room: room });
-//     })
-//     .catch((error) => {
-//       return next({
-//         log: `twilioController.createRoom: ${error.message}`,
-//         message: {
-//           err: "Error occurred in twilioController.createRoom. Check server logs for details.",
-//         },
-//       });
-//     });
-// };
-
+twilioController.sendText = (req, res, next) => {
+  const { phone } = req.query;
+  try {
+    client.messages
+      .create({ from: phoneNumber, body: "heylooo", to: "+17142151097" })
+      .then((message) => console.log(message.sid));
+    res.status(200).json({ message: "SMS sent!" });
+  } catch (e) {
+    return next({
+      log: `Error caught in twilioController.sendText. \n Error Message: ${e.errmsg || e}`,
+      message: { err: e.errmsg || e },
+    });
+  }
+};
 twilioController.getToken = (req, res, next) => {
   try {
     const { identity, room } = req.body;
@@ -58,7 +52,7 @@ twilioController.getToken = (req, res, next) => {
     console.log(token.toJwt());
 
     // Serialize the token to a JWT string.
-    res.send(token.toJwt());
+    // res.send(token.toJwt());
     // res.send(accessToken);
   } catch (e) {
     return next({

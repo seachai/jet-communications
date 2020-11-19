@@ -1,27 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import {
-  Button,
-  Input,
-  Heading,
-  Flex,
-  Box,
-  FormControl,
-} from "@chakra-ui/react";
+import { Button, Input, Heading, Flex, Box, FormControl, useDisclosure } from "@chakra-ui/react";
 import { ArrowForwardIcon, Icon } from "@chakra-ui/icons";
-import { FaVideo } from "react-icons/fa";
+import { FaVideo, FaSms } from "react-icons/fa";
 import io from "socket.io-client";
 
 import { useInput } from "../../hooks";
 import MessageList from "./MessageList";
+import SMS from "../SMS";
 import { AuthContext } from "../../context/AuthContext";
 
 const socket = io(process.env.ENDPOINT);
 
 const ChatRoom = () => {
+  const { auth } = useContext(AuthContext);
   const [message, setMessage, handleChange] = useInput();
   const [messageList, setMessageList] = useState([]);
-  const { auth } = useContext(AuthContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     socket.on("reply-message", (msg) => {
@@ -48,9 +43,7 @@ const ChatRoom = () => {
     chat.scrollTop = chat.scrollHeight;
   };
 
-  const emitMessage = () =>
-    socket.emit("send-message", { author: auth.name, message });
-
+  const emitMessage = () => socket.emit("send-message", { author: auth.name, message });
   return (
     <Flex height='800px' justifyContent='center'>
       <Box borderWidth={1} p={12} pb={4} boxShadow='lg'>
@@ -75,13 +68,22 @@ const ChatRoom = () => {
             </Button>
           </form>
         </FormControl>
+        <Button mt={4} colorScheme='green' rightIcon={<Icon as={FaVideo} w={4} h={4} />}>
+          <Link to='/video-chat'>Video</Link>
+        </Button>
         <Button
           mt={4}
           colorScheme='blue'
-          rightIcon={<Icon as={FaVideo} w={4} h={4} />}
+          rightIcon={<Icon as={FaSms} w={4} h={4} />}
+          // onOpen={() => {
+          //   console.log(isOpen);
+          // }}
         >
-          <Link to='/video-chat'>Transfer to Video</Link>
+          SMS
         </Button>
+        {
+          // isOpen ? <SMS isOpen={isOpen} onClose={onClose} />
+        }
       </Box>
     </Flex>
   );

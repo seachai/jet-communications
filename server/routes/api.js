@@ -48,4 +48,11 @@ router.post("/video/callback", (req, res) => {
   return res.end();
 });
 
+router.post("/sms", twilioController.sendText);
+
+router.post("/sms/callback", (req, res) => {
+  console.log({ req });
+  res.end();
+});
+
 module.exports = router;
