@@ -24,6 +24,11 @@ const ChatRoom = () => {
     });
 
     socket.on("receive-sms", (sms) => {
+      const msg = {
+        author: auth.name,
+        message: sms.Body,
+      };
+      setMessageList((messageList) => [...messageList, msg]);
       console.log({ sms });
     });
   }, []);
