@@ -79,7 +79,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => console.log("Client disconnected"));
 });
 
-module.exports = io;
+module.exports.io = io;
 
 /**
  * Admin connects
