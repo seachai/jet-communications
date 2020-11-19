@@ -15,9 +15,11 @@ import {
 const SMS = ({ isOpen, onClose }) => {
   const [mobileNumber, setMobileNumber] = useState("");
   const handleSubmit = async () => {
+    localStorage.setItem('number', `1${mobileNumber}`);
     axios.post(`${process.env.REACT_APP_API_URL}/sms`,
-      null, { params: { phone: `${1}mobileNumber` } }
+      null, { params: { phone: `1${mobileNumber}` } }
     )
+    onClose();
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -40,17 +42,9 @@ const SMS = ({ isOpen, onClose }) => {
         </ModalBody>
 
         <ModalFooter>
-<<<<<<< HEAD
-          <Button colorScheme="blue" mr={3} onClick={() => {
-            handleSubmit();
-            onClose();
-          }}>
-=======
           <Button colorScheme='blue' mr={3} onClick={handleSubmit}>
->>>>>>> 29c604321b5432970f0e101bf1a6e91a70ffe93b
             Connect
           </Button>
-          {/* <Button variant="ghost" onClick={onClose}>Close</Button> */}
         </ModalFooter>
       </ModalContent>
     </Modal>
