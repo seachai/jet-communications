@@ -30,7 +30,7 @@ const serverPort = server.listen(PORT);
 // SET UP SOCKETS
 const io = socketIO(serverPort, {
   cors: true,
-  origins: ["http://127.0.0.1:8080"],
+  origins: ["http://127.0.0.1:8080", "https://jiggly.herokuapp.com"],
 });
 
 io.on("connection", (socket) => {
