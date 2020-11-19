@@ -14,7 +14,7 @@ twilioController.sendText = (req, res, next) => {
   const { phone } = req.query;
   try {
     client.messages
-      .create({ from: phoneNumber, body: "heylooo", to: "+17142151097" })
+      .create({ from: phoneNumber, body: "heylooo", to: phone })
       .then((message) => console.log(message.sid));
     res.status(200).json({ message: "SMS sent!" });
   } catch (e) {

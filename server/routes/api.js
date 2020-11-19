@@ -51,7 +51,7 @@ router.post("/video/callback", (req, res) => {
 router.post("/sms", twilioController.sendText);
 
 router.post("/sms/callback", (req, res) => {
-  console.log({ req });
+  console.log(req.body);
   res.end();
 });
 
