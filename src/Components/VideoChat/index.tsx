@@ -5,75 +5,105 @@ import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { leaveRoom } from "../../hooks/useTwilioVideo";
 
-const VideoChat = ({ roomID }) => {
+const VideoChat = () => {
   const { auth } = useContext(AuthContext);
   const [room, setRoom] = useState(null);
   const [token, setToken] = useState(null);
   const [participants, setParticipants] = useState([]);
-  const videoRef = useRef();
+  const localVidRef = useRef();
+  const remoteVidRef = useRef();
+
+  // Get a token on the initial render
+  useEffect(() => {
+    getParticipantToken({ identity: auth.name, room: "Support Room" });
+  }, []);
+
+  useEffect(() => {
+    window.Twilio.Video.connect(token, { video: true, audio: true, name: "Support Room" }).then(
+      (room) => {
+        // Attach the local video
+        window.Twilio.Video.createLocalVideoTrack().then((track) => {
+          localVidRef.current.appendChild(track.attach());
+        });
+
+        const addParticipant = (participant) => {
+          console.log("new participant!");
+          console.log(participant);
+          participant.tracks.forEach((publication) => {
+            if (publication.isSubscribed) {
+              const track = publication.track;
+
+              remoteVidRef.current.appendChild(track.attach());
+              console.log("attached to remote video");
+            }
+          });
+
+          participant.on("trackSubscribed", (track) => {
+            console.log("track subscribed");
+            remoteVidRef.current.appendChild(track.attach());
+          });
+        };
+
+        room.participants.forEach(addParticipant);
+        room.on("participantConnected", addParticipant);
+      }
+    );
+  }, [token]);
 
   // Helper to get a token
   const getParticipantToken = async ({ identity, room }) => {
-    console.log("participant token");
     const { data } = await axios({
       method: "POST",
       url: `${process.env.REACT_APP_API_URL}/video/token`,
       data: { identity, room },
     });
-
     setToken(data);
-    return data;
+    console.log({ data });
+    // await createRoom(data);
   };
 
-  const remoteParticipants = participants.map((participant) => (
-    <p key={participant.sid}>{participant.identity}</p>
-  ));
+  // const createRoom = async (token) => {
+  //   const twilioConnection = await window.Twilio.Video.connect(token, {
+  //     name: "Support Room",
+  //     audio: true,
+  //     video: { width: 640 },
+  //     logLevel: "info",
+  //   });
+  //   console.log({ twilioConnection });
+  //   setRoom(() => twilioConnection);
 
-  // Get the token on initial render
-  useEffect(() => {
-    console.log("getting token");
-    async function fn() {
-      return await getParticipantToken({ identity: "James", room });
-    }
-    const result = fn();
-    console.log({ result });
-  }, []);
+  //   twilioConnection.on("participantConnected", (participant) => {
+  //     console.log(`Participant "${participant.identity}" connected`);
+  //     setParticipants((prevParticipants) => [...prevParticipants, participant]);
+  //     participant.tracks.forEach((publication) => {
+  //       if (publication.isSubscribed) {
+  //         const track = publication.track;
+  //         console.log({ track });
+  //         remoteVidRef.current.appendChild(track.attach());
+  //       }
+  //     });
 
-  // Create the room
-  useEffect(() => {
-    if (!token) return;
+  //     participant.on("trackSubscribed", (track) => {
+  //       remoteVidRef.current.appendChild(track.attach());
+  //     });
 
-    async function fn() {
-      return await window.Twilio.Video.connect(token, {
-        name: "Support Room",
-        audio: true,
-        video: { width: 640 },
-        logLevel: "info",
-      });
-    }
+  //     twilioConnection.participants.forEach(addParticipant);
+  //   });
+  //   await createLocalTrackVideo();
+  // };
 
-    fn().then(async (res) => {
-      const localTrack = await window.Twilio.Video.createLocalVideoTrack().catch((error) => {
-        console.error(`Unable to create local tracks: ${error.message}`);
-      });
+  // const createLocalTrackVideo = async () => {
+  //   const localTrack = await window.Twilio.Video.createLocalVideoTrack().catch((error) => {
+  //     console.error(`Unable to create local tracks: ${error.message}`);
+  //   });
 
-      // Attach the local video if it’s not already visible.
-      if (!videoRef.current.hasChildNodes()) {
-        const localEl = localTrack.attach();
-        localEl.className = "local-video";
-
-        videoRef.current.appendChild(localEl);
-      }
-
-      // Add a window listener to disconnect if the tab is closed. This works
-      // around a looooong lag before Twilio catches that the video is gone.
-      window.addEventListener("beforeunload", leaveRoom);
-    });
-
-    return () => {
-      window.removeEventListener("beforeunload", leaveRoom);
-    };
-  }, [token]);
+  //   // Attach the local video if it’s not already visible.
+  //   if (!localVidRef.current.hasChildNodes()) {
+  //     const localEl = localTrack.attach();
+  //     localEl.className = "local-video";
+  //     localVidRef.current.appendChild(localEl);
+  //   }
+  // };
 
   return (
     <>
@@ -83,12 +113,11 @@ const VideoChat = ({ roomID }) => {
         <p>Token: {token}</p>
       </div>
       <hr />
-      <div className='local-participant'>
-        {room ? <p key={room.localParticipant.sid}>{room.localParticipant.identity}</p> : ""}
-      </div>
+      <div className='local-participant'></div>
       <h3>Remote Participants</h3>
-      <div className='remote-participants'>{remoteParticipants}</div>
-      <div className='chat' ref={videoRef} />
+      <div className='remote-participants'>{participants}</div>
+      <div ref={localVidRef} />
+      <div ref={remoteVidRef} />
     </>
   );
 };
