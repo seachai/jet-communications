@@ -1,14 +1,7 @@
 import React, { useState, useContext } from "react";
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  Heading,
-  Flex,
-  Box,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, Button, Heading, Flex, Box } from "@chakra-ui/react";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { Link } from "react-router-dom";
 
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
@@ -67,29 +60,17 @@ const UserForms = () => {
         textAlign='center'
         boxShadow='lg'
       >
-        <Heading mb={6}>
-          {isRegistered ? "Welcome, please login" : "Register"}
-        </Heading>
+        <Heading mb={6}>{isRegistered ? "Welcome, please login" : "Register"}</Heading>
         <form onSubmit={handleSubmit}>
           <FormControl>
             {!isRegistered && (
               <>
                 <FormLabel>Name</FormLabel>
-                <Input
-                  type='text'
-                  value={values.name}
-                  name='name'
-                  onChange={handleChange}
-                />
+                <Input type='text' value={values.name} name='name' onChange={handleChange} />
               </>
             )}
             <FormLabel>Email address</FormLabel>
-            <Input
-              type='text'
-              value={values.email}
-              name='email'
-              onChange={handleChange}
-            />
+            <Input type='text' value={values.email} name='email' onChange={handleChange} />
             <FormLabel>Password</FormLabel>
             <Input
               type='password'
@@ -117,6 +98,9 @@ const UserForms = () => {
                   Back to login
                 </Button>
               )}
+              <Button ml={4}>
+                <Link to='/chatroom'>Sign in as guest</Link>
+              </Button>
             </Box>
           </FormControl>
         </form>

@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(() => initialAuthState);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const initialMode = localStorage.getItem("mode") || "webchat";
-  const [mode, setMode] = useState(initialMode);
+  const [mode, setMode] = useState(() => initialMode);
 
   useEffect(() => {
     const authFromLocalStorage = JSON.parse(localStorage.getItem("auth"));

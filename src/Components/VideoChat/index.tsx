@@ -19,7 +19,7 @@ const socket = io(process.env.PORT || process.env.ENDPOINT);
 
 const VideoChat = ({ isOpen, onClose, storeMode }) => {
   const { auth } = useContext(AuthContext);
-  const [room, setRoom] = useState(null);
+  const [roomId, setRoomId] = useState(null);
   const [token, setToken] = useState(null);
 
   // Get a token on the initial render
@@ -46,16 +46,17 @@ const VideoChat = ({ isOpen, onClose, storeMode }) => {
     console.log({ data });
   };
 
-  const VideoChat = ({ token, setRoom }) => {
+  const VideoChat = ({ token }) => {
     const localVidRef = useRef();
     const remoteVidRef = useRef();
 
     useEffect(() => {
       window.Twilio.Video.connect(token, { video: true, audio: true, name: "Support Room" }).then(
         (room) => {
+          setRoomId(room.sid);
           // Attach the local video
-          setRoom(room);
-          console.log({ room });
+          // setRoom(room);
+          // console.log({ room });
           window.Twilio.Video.createLocalVideoTrack().then((track) => {
             localVidRef.current.appendChild(track.attach());
           });
@@ -100,7 +101,7 @@ const VideoChat = ({ isOpen, onClose, storeMode }) => {
           onClose();
           // Close the room
           axios.post("http://localhost:3001/api/video/complete", {
-            room: room.sid,
+            room: roomId,
           });
         }}
       >
@@ -109,7 +110,7 @@ const VideoChat = ({ isOpen, onClose, storeMode }) => {
           <ModalHeader>Video Chat</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <VideoChat token={token} setRoom={setRoom} />
+            <VideoChat token={token} />
           </ModalBody>
           <ModalFooter></ModalFooter>
         </ModalContent>
