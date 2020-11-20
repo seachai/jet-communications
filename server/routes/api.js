@@ -37,9 +37,6 @@ router.get("/", (req, res) => {
   res.status(200).json({ message: "/api route ping" });
 });
 
-// VIDEO
-// router.post("/video", twilioController.createRoom);
-
 // GET ACCESS TOKEN FOR TWILIO VIDEO CHAT
 router.post("/video/token", twilioController.getToken);
 
@@ -47,5 +44,11 @@ router.post("/video/callback", (req, res) => {
   console.log({ req });
   return res.end();
 });
+
+router.post("/video/complete", twilioController.completeRoom);
+
+// router.post("/sms/verify-number", twilioController.verifyNumber);
+
+router.post("/sms", twilioController.sendText);
 
 module.exports = router;

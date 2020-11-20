@@ -4,32 +4,46 @@ const accessToken = process.env.TWILIO_ACCESS_TOKEN;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const apiKey = process.env.TWILIO_API_KEY;
 const apiSecret = process.env.TWILIO_API_SECRET;
+const phoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
-// const client = require("twilio")(
-//   "ACb062bc2266d0681bed2af3c4c68450bd",
-//   "ab660c50f671307086a8d55f9d2a3d52"
-// );
+const client = require("twilio")(accountSid, authToken);
 
 const twilioController = {};
 
-// twilioController.createRoom = (req, res, next) => {
-//   const roomName = Date.now();
-//   client.video.rooms
-//     .create({ uniqueName: roomName })
-//     .then((room) => {
-//       console.log("Video chat room created: ", room.sid);
-//       return res.status(200).json({ message: "Video chat started", room: room });
-//     })
-//     .catch((error) => {
-//       return next({
-//         log: `twilioController.createRoom: ${error.message}`,
-//         message: {
-//           err: "Error occurred in twilioController.createRoom. Check server logs for details.",
-//         },
-//       });
-//     });
-// };
+twilioController.verifyNumber = (req, res, next) => {
+  const { phone } = req.query;
+  res.locals.phone = phone;
+  try {
+    client.messages
+      .create({
+        from: phoneNumber,
+        body: "Reply to this text to resume your conversation.",
+        to: phone,
+      })
+      .then((message) => console.log(message.sid));
+    next();
+  } catch (e) {
+    return next({
+      log: `Error caught in twilioController.sendText. \n Error Message: ${e.errmsg || e}`,
+      message: { err: e.errmsg || e },
+    });
+  }
+};
 
+twilioController.sendText = (req, res, next) => {
+  const { phone, message } = req.body.data;
+  try {
+    client.messages
+      .create({ from: phoneNumber, body: message, to: phone })
+      .then((message) => console.log(message.sid));
+    res.status(200).json({ sid: message.sid });
+  } catch (e) {
+    return next({
+      log: `Error caught in twilioController.sendText. \n Error Message: ${e.errmsg || e}`,
+      message: { err: e.errmsg || e },
+    });
+  }
+};
 twilioController.getToken = (req, res, next) => {
   try {
     const { identity, room } = req.body;
@@ -47,7 +61,7 @@ twilioController.getToken = (req, res, next) => {
     });
 
     // Assign the generated identity to the token.
-    token.identity = identity;
+    token.identity = Date.now();
 
     // Grant the access token Twilio Video capabilities.
     const grant = new VideoGrant({
@@ -66,6 +80,16 @@ twilioController.getToken = (req, res, next) => {
       message: { err: e.errmsg || e },
     });
   }
+};
+
+twilioController.completeRoom = (req, res, next) => {
+  const { room } = req.body;
+  console.log(req.body);
+  client.video
+    .rooms(room)
+    .update({ status: "completed" })
+    .then((room) => console.log(room.uniqueName));
+  res.status(200).json({ message: "Completed room" });
 };
 
 module.exports = twilioController;
